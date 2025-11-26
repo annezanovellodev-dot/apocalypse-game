@@ -1231,12 +1231,12 @@
             // Attendre que Firebase soit prêt
             setTimeout(async () => {
                 try {
-                    // Test connexion
-                    const success = await SupabaseClient.initSupabase();
+                    // Test connexion Firebase
+                    const success = await window.SupabaseClient.initSupabase();
                     console.log('✅ Connexion Firebase:', success);
                     
                     // Test login admin
-                    const result = await SupabaseClient.loginAdmin();
+                    const result = await window.SupabaseClient.loginAdmin();
                     console.log('✅ Login admin:', result ? 'Succès' : 'Échec');
                     
                     // Afficher le statut dans la page
