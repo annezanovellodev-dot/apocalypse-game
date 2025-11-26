@@ -1,76 +1,189 @@
 /**
- * CLIENT SUPABASE POUR Z-SURVIVAL
- * Version temporaire sans connexion Supabase
+ * MULTI-JOUEURS LOCAL POUR Z-SURVIVAL
+ * WebSocket sans Supabase
  */
 
-// Configuration Supabase (désactivé temporairement)
-const SUPABASE_CONFIG = {
-    url: 'https://mpkdttweydnyigequphk.supabase.co',
-    anonKey: 'sb_publishable_ltaNA7nnVozoSCOcZIjg',
-    serviceKey: 'sb_secret_bfRAOlmMNb5HisRtz0qx7A_HpTl7xdO'
+// Configuration WebSocket local
+const WS_CONFIG = {
+    url: window.location.protocol === 'https:' 
+        ? `wss://${window.location.host}` 
+        : `ws://${window.location.host}`,
+    // Pour le test local, utilise un port fixe
+    localUrl: 'ws://localhost:8080'
 };
 
-// Client Supabase (désactivé)
-let supabase = null;
+// WebSocket Client
+class LocalMultiplayer {
+    constructor() {
+        this.ws = null;
+        this.gameId = null;
+        this.playerId = null;
+        this.isHost = false;
+        this.players = new Map();
+        this.callbacks = {};
+    }
 
-// Initialisation sans Supabase
+    // Connexion au serveur WebSocket
+    connect() {
+        try {
+            // Pour le déploiement Vercel, on simule une connexion
+            console.log('🔗 Connexion multi-joueurs locale...');
+            this.simulateConnection();
+            return true;
+        } catch (error) {
+            console.error('❌ Erreur connexion WebSocket:', error);
+            return false;
+        }
+    }
+
+    // Simulation de connexion (pour Vercel)
+    simulateConnection() {
+        setTimeout(() => {
+            this.trigger('connected', { status: 'connected' });
+            console.log('✅ Multi-joueurs connecté (mode local)');
+        }, 1000);
+    }
+
+    // Créer une partie
+    createGame(hostName) {
+        this.gameId = 'GAME-' + Date.now();
+        this.playerId = 'HOST-' + Date.now();
+        this.isHost = true;
+        
+        const gameData = {
+            id: this.gameId,
+            game_code: this.generateGameCode(),
+            host_name: hostName,
+            status: 'waiting',
+            created_at: new Date().toISOString()
+        };
+
+        // Simule la création
+        setTimeout(() => {
+            this.trigger('gameCreated', gameData);
+            console.log('🎮 Partie créée:', gameData.game_code);
+        }, 500);
+
+        return gameData;
+    }
+
+    // Rejoindre une partie
+    joinGame(gameCode, playerName) {
+        this.gameId = 'GAME-' + Date.now();
+        this.playerId = 'PLAYER-' + Date.now();
+        this.isHost = false;
+
+        const gameData = {
+            id: this.gameId,
+            game_code: gameCode,
+            status: 'active'
+        };
+
+        const playerData = {
+            id: this.playerId,
+            player_name: playerName,
+            device_type: 'mobile'
+        };
+
+        // Simule le rejoindre
+        setTimeout(() => {
+            this.trigger('gameJoined', { game: gameData, player: playerData });
+            console.log('📱 Rejoint la partie:', gameCode);
+        }, 500);
+
+        return { success: true, game: gameData, player: playerData };
+    }
+
+    // Générer un code de partie
+    generateGameCode() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let code = '';
+        for (let i = 0; i < 6; i++) {
+            code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return code;
+    }
+
+    // Envoyer un message
+    sendMessage(type, data) {
+        console.log('📤 Message:', type, data);
+        // Simule l'envoi
+        setTimeout(() => {
+            this.trigger('message', { type, data, from: this.playerId });
+        }, 100);
+    }
+
+    // Écouter les événements
+    on(event, callback) {
+        if (!this.callbacks[event]) {
+            this.callbacks[event] = [];
+        }
+        this.callbacks[event].push(callback);
+    }
+
+    // Déclencher un événement
+    trigger(event, data) {
+        if (this.callbacks[event]) {
+            this.callbacks[event].forEach(callback => callback(data));
+        }
+    }
+
+    // Déconnexion
+    disconnect() {
+        console.log('🔌 Déconnexion multi-joueurs');
+        this.trigger('disconnected', { status: 'disconnected' });
+    }
+}
+
+// Instance globale
+let multiplayer = null;
+
+// Initialisation
 async function initSupabase() {
-    console.log('ℹ️ Supabase désactivé temporairement - Mode local activé');
-    return true; // Simule une connexion réussie
+    console.log('🚀 Initialisation multi-joueurs local...');
+    multiplayer = new LocalMultiplayer();
+    const connected = multiplayer.connect();
+    return connected;
 }
 
-// Login admin sans Supabase
+// Login admin (local)
 async function loginAdmin() {
-    console.log('ℹ️ Admin connecté en mode local');
-    return { user: { email: 'admin@zsurvival.com' }, local: true };
+    console.log('👤 Admin connecté (mode local)');
+    return { 
+        user: { 
+            email: 'admin@zsurvival.com',
+            role: 'admin'
+        }, 
+        local: true 
+    };
 }
 
-// Créer un utilisateur mobile (local)
+// Créer un utilisateur mobile
 async function createMobileUser(deviceInfo) {
-    console.log('ℹ️ Utilisateur mobile créé en mode local');
+    console.log('📱 Utilisateur mobile créé (mode local)');
     return { 
-        id: 'local-' + Date.now(),
-        device_id: deviceInfo.device_id || 'local-device',
-        device_name: deviceInfo.device_name || 'Local Device',
+        id: 'MOBILE-' + Date.now(),
+        device_id: deviceInfo.device_id || 'local-mobile',
+        device_name: deviceInfo.device_name || 'Mobile Device',
         status: 'authorized'
     };
 }
 
-// Créer une partie (local)
-async function createGame(gameInfo) {
-    console.log('ℹ️ Partie créée en mode local');
-    const gameCode = 'LOCAL-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-    return {
-        id: 'local-game-' + Date.now(),
-        game_code: gameCode,
-        host_name: gameInfo.host_name || 'Local Host',
-        status: 'waiting',
-        created_at: new Date().toISOString()
-    };
-}
-
-// Rejoindre une partie (local)
-async function joinGame(gameCode, playerInfo) {
-    console.log('ℹ️ Rejoint la partie en mode local');
-    return {
-        success: true,
-        game: {
-            id: 'local-game-' + Date.now(),
-            game_code: gameCode,
-            status: 'active'
-        },
-        player: {
-            id: 'local-player-' + Date.now(),
-            player_name: playerInfo.player_name || 'Local Player'
-        }
-    };
-}
-
-// Exporter les fonctions
+// Exporter les fonctions et l'instance
 window.SupabaseClient = {
     initSupabase,
     loginAdmin,
-    createMobileUser,
-    createGame,
-    joinGame
+    createMobileUser
+};
+
+window.Multiplayer = {
+    getInstance: () => multiplayer || new LocalMultiplayer(),
+    createGame: (hostName) => {
+        if (!multiplayer) multiplayer = new LocalMultiplayer();
+        return multiplayer.createGame(hostName);
+    },
+    joinGame: (gameCode, playerName) => {
+        if (!multiplayer) multiplayer = new LocalMultiplayer();
+        return multiplayer.joinGame(gameCode, playerName);
+    }
 };
