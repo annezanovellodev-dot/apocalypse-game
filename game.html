@@ -1231,6 +1231,12 @@
             // Attendre que Firebase soit prêt
             setTimeout(async () => {
                 try {
+                    // Vérifier que SupabaseClient existe
+                    if (!window.SupabaseClient) {
+                        console.error('❌ SupabaseClient pas encore chargé');
+                        return;
+                    }
+                    
                     // Test connexion Firebase
                     const success = await window.SupabaseClient.initSupabase();
                     console.log('✅ Connexion Firebase:', success);
@@ -1285,7 +1291,7 @@
                     
                     setTimeout(() => errorDiv.remove(), 5000);
                 }
-            }, 3000);
+            }, 5000); // Augmenté à 5 secondes pour laisser le temps à Firebase de charger
         });
     </script>
     <!-- Interface Multi-joueurs -->
