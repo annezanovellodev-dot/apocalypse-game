@@ -6,8 +6,8 @@
 // Configuration Supabase (à remplir avec tes vraies clés)
 const SUPABASE_CONFIG = {
     url: 'https://mpkdttweydnyigequphk.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wa2R0dHdleWRueWlnZXF1cGhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI2MDI2NzksImV4cCI6MjA0ODE4ODY3OX0.vHqQYgZ3Jl5VxHqYxQmQ2JkL8F9K7pX3WqJ4Z6Y8Qk',
-    serviceKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wa2R0dHdleWRueWlnZXF1cGhrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczMjYwMjY3OSwiZXhwIjoyMDQ4MTg4Njc5fQ.3X7F9K8J2G5L6N9P8R3Q1V4W7Y2Z5X8Q9K6L3P7R4W2Y'
+    anonKey: 'sb_publishable_ltaNA7nnVozoSCOcZIjg',
+    serviceKey: 'sb_secret_bfRAOlmMNb5HisRtz0qx7A_HpTl7xdO'
 };
 
 // Client Supabase
