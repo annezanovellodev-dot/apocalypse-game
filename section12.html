@@ -1,0 +1,662 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Cartes Crise - 
+    <!-- Security Headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; frame-ancestors 'none';">
+    
+    <!-- Anti-Caching for Security -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <!-- Security Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.min.js"></script>
+    
+    <!-- Security System -->
+    <script src="game/security-system.js"></script>
+    <script src="game/security-headers.js"></script>
+    <script src="game/security-testing.js"></script>
+Z-SURVIVAL</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Roboto:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #0f0c29;
+            background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+            color: #f5f5f5;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(220, 20, 60, 0.4);
+        }
+
+        .back-link {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #fff;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-family: 'Cinzel', serif;
+            color: #FF6347;
+            font-size: 32px;
+            margin: 40px 0 20px 0;
+            padding-left: 15px;
+            border-left: 5px solid #DC143C;
+        }
+
+        h3 {
+            color: #FF6347;
+            font-size: 24px;
+            margin: 30px 0 15px 0;
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        /* Crisis Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .crisis-card {
+            background: linear-gradient(135deg, rgba(139, 0, 0, 0.3) 0%, rgba(220, 20, 60, 0.2) 100%);
+            border: 3px solid #DC143C;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .crisis-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(220, 20, 60, 0.5);
+            border-color: #FF6347;
+        }
+
+        .crisis-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(220, 20, 60, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .crisis-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-number {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #DC143C;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 22px;
+            color: #FF6347;
+            margin-bottom: 15px;
+            padding-right: 50px;
+        }
+
+        .card-type {
+            display: inline-block;
+            background: rgba(220, 20, 60, 0.3);
+            color: #fbbf24;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .card-effect {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 3px solid #FF6347;
+        }
+
+        .card-effect strong {
+            color: #fbbf24;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            border-left: 5px solid #3b82f6;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            border-left: 5px solid #f59e0b;
+        }
+
+        .danger-box {
+            background: rgba(220, 20, 60, 0.1);
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            border-left: 5px solid #DC143C;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.1) 0%, rgba(139, 0, 0, 0.2) 100%);
+            border: 2px solid #DC143C;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            color: #FF6347;
+            font-family: 'Cinzel', serif;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: #f5f5f5;
+            margin-top: 10px;
+        }
+
+        strong {
+            color: #FF6347;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #DC143C 0%, #FF6347 100%);
+            padding: 3px 10px;
+            border-radius: 5px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Retour au Menu</a>
+
+        <div class="header">
+            <h1>🎴 Les 30 Cartes Crise</h1>
+            <p style="font-size: 18px; opacity: 0.9;">Liste complète des événements du Bot de Crise</p>
+        </div>
+
+        <div class="content">
+            <div class="info-box">
+                <p><strong>📖 À propos des Cartes Crise :</strong></p>
+                <p>Chaque tour, pendant la Phase de Crise, piochez 1 carte et résolvez son effet immédiatement. Les
+                    cartes sont ensuite défaussées et remélangées une fois le paquet épuisé.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">30</div>
+                    <div class="stat-label">Cartes au Total</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">10</div>
+                    <div class="stat-label">Assauts Zombies</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Augmentations d'Infection</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Événements Spéciaux</div>
+                </div>
+            </div>
+
+            <h2>💀 Assauts Zombies (10 cartes)</h2>
+            <p>Ces cartes déclenchent une attaque de Zombies sur un territoire spécifique.</p>
+
+            <div class="card-grid">
+                <div class="crisis-card">
+                    <div class="card-number">1</div>
+                    <h3 class="card-title">Horde du Nord</h3>
+                    <span class="card-type">ASSAUT ZOMBIE</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Lancez 2d6. La Capitale la plus au Nord est attaquée par ce nombre de
+                        Zombies.
+                    </div>
+                    <p><strong>Résolution :</strong> Le propriétaire défend avec ses unités. Si les Zombies gagnent, le
+                        territoire est conquis et l'Infection +1.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">2</div>
+                    <h3 class="card-title">Horde du Sud</h3>
+                    <span class="card-type">ASSAUT ZOMBIE</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Lancez 2d6. La Capitale la plus au Sud est attaquée par ce nombre de
+                        Zombies.
+                    </div>
+                    <p><strong>Résolution :</strong> Identique à "Horde du Nord".</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">3</div>
+                    <h3 class="card-title">Horde de l'Est</h3>
+                    <span class="card-type">ASSAUT ZOMBIE</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Lancez 2d6. La Capitale la plus à l'Est est attaquée par ce nombre de
+                        Zombies.
+                    </div>
+                    <p><strong>Résolution :</strong> Identique aux autres Hordes directionnelles.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">4</div>
+                    <h3 class="card-title">Horde de l'Ouest</h3>
+                    <span class="card-type">ASSAUT ZOMBIE</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Lancez 2d6. La Capitale la plus à l'Ouest est attaquée par ce nombre de
+                        Zombies.
+                    </div>
+                    <p><strong>Résolution :</strong> Identique aux autres Hordes directionnelles.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">5</div>
+                    <h3 class="card-title">Assaut sur le Leader</h3>
+                    <span class="card-type">ASSAUT ZOMBIE</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Le joueur avec le plus de territoires est attaqué. Lancez 3d6 Zombies
+                        sur sa Capitale la plus proche d'un Foyer Primaire.
+                    </div>
+                    <p><strong>Résolution :</strong> En cas d'égalité, tous les joueurs à égalité sont attaqués.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">6</div>
+                    <h3 class="card-title">Assaut Coordonné</h3>
+                    <span class="card-type">ASSAUT ZOMBIE</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> TOUS les joueurs sont attaqués simultanément. Chacun lance 1d6 pour
+                        déterminer le nombre de Zombies qui attaquent sa Base.
+                    </div>
+                    <p><strong>Résolution :</strong> Les Bases ne peuvent PAS être conquises, mais les unités perdues ne
+                        reviennent pas.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">7</div>
+                    <h3 class="card-title">Foyer Infesté</h3>
+                    <span class="card-type">ASSAUT ZOMBIE</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Le Foyer Primaire avec le moins de Zombies gagne +5 Zombies
+                        supplémentaires.
+                    </div>
+                    <p><strong>Résolution :</strong> Si un Foyer est déjà conquis, cette carte n'a aucun effet.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">8</div>
+                    <h3 class="card-title">Mutation Rapide</h3>
+                    <span class="card-type">ASSAUT ZOMBIE</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Lancez 1d6. Tous les Zombies sur le plateau gagnent +X en force (où X =
+                        résultat du dé) pour ce tour uniquement.
+                    </div>
+                    <p><strong>Résolution :</strong> Affecte tous les combats contre les Zombies jusqu'au prochain tour.
+                    </p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">9</div>
+                    <h3 class="card-title">Vague Nocturne</h3>
+                    <span class="card-type">ASSAUT ZOMBIE</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Chaque territoire adjacent à un Foyer Primaire est attaqué par 1d6
+                        Zombies.
+                    </div>
+                    <p><strong>Résolution :</strong> Peut déclencher 3-6 combats simultanés !</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">10</div>
+                    <h3 class="card-title">Horde Massive</h3>
+                    <span class="card-type">ASSAUT ZOMBIE</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Le joueur avec le plus d'Artefacts est attaqué par 4d6 Zombies sur sa
+                        Base Principale.
+                    </div>
+                    <p><strong>Résolution :</strong> Si égalité, tous les joueurs à égalité sont attaqués. <span
+                            class="highlight">TRÈS DANGEREUX !</span></p>
+                </div>
+            </div>
+
+            <h2>☣️ Augmentations d'Infection (8 cartes)</h2>
+            <p>Ces cartes augmentent le niveau d'Infection Mondiale, rapprochant tous les joueurs de la défaite
+                collective.</p>
+
+            <div class="card-grid">
+                <div class="crisis-card">
+                    <div class="card-number">11</div>
+                    <h3 class="card-title">Propagation Lente</h3>
+                    <span class="card-type">INFECTION +1</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> L'Infection Mondiale augmente de +1.
+                    </div>
+                    <p><strong>Fréquence :</strong> 3 exemplaires dans le paquet.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">12</div>
+                    <h3 class="card-title">Propagation Rapide</h3>
+                    <span class="card-type">INFECTION +2</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> L'Infection Mondiale augmente de +2.
+                    </div>
+                    <p><strong>Fréquence :</strong> 2 exemplaires dans le paquet.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">13</div>
+                    <h3 class="card-title">Épidémie Fulgurante</h3>
+                    <span class="card-type">INFECTION +3</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> L'Infection Mondiale augmente de +3. <span class="highlight">CRITIQUE
+                            !</span>
+                    </div>
+                    <p><strong>Fréquence :</strong> 1 exemplaire dans le paquet.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">14</div>
+                    <h3 class="card-title">Contagion Ciblée</h3>
+                    <span class="card-type">INFECTION VARIABLE</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Lancez 1d6. L'Infection augmente du résultat ÷ 2 (arrondi supérieur).
+                    </div>
+                    <p><strong>Résultat :</strong> 1-2 = +1, 3-4 = +2, 5-6 = +3.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">15</div>
+                    <h3 class="card-title">Mutation Virale</h3>
+                    <span class="card-type">INFECTION SPÉCIALE</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> L'Infection augmente de +1 par Foyer Primaire encore contrôlé par les
+                        Zombies.
+                    </div>
+                    <p><strong>Résultat :</strong> +0 à +3 selon la progression de la partie.</p>
+                </div>
+            </div>
+
+            <h2>⚠️ Événements Spéciaux (12 cartes)</h2>
+            <p>Ces cartes ont des effets variés : perte de ressources, événements négatifs, ou parfois... rien du tout !
+            </p>
+
+            <div class="card-grid">
+                <div class="crisis-card">
+                    <div class="card-number">16</div>
+                    <h3 class="card-title">Pénurie de Munitions</h3>
+                    <span class="card-type">PERTE RESSOURCES</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Tous les joueurs perdent 50% de leurs Munitions (arrondi inférieur).
+                    </div>
+                    <p><strong>Exemple :</strong> Si vous avez 7 Munitions, vous en perdez 3.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">17</div>
+                    <h3 class="card-title">Famine</h3>
+                    <span class="card-type">PERTE RESSOURCES</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Tous les joueurs perdent 50% de leur Nourriture (arrondi inférieur).
+                    </div>
+                    <p><strong>Impact :</strong> Ralentit le recrutement d'unités.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">18</div>
+                    <h3 class="card-title">Effondrement Structurel</h3>
+                    <span class="card-type">PERTE RESSOURCES</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Tous les joueurs perdent 50% de leurs Matériaux (arrondi inférieur).
+                    </div>
+                    <p><strong>Impact :</strong> Ralentit la progression en Recherche.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">19</div>
+                    <h3 class="card-title">Sabotage</h3>
+                    <span class="card-type">ÉVÉNEMENT NÉGATIF</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Le joueur avec le niveau de Recherche le plus élevé perd 1 niveau de
+                        Recherche (minimum 0).
+                    </div>
+                    <p><strong>Résolution :</strong> En cas d'égalité, tous les joueurs à égalité sont affectés.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">20</div>
+                    <h3 class="card-title">Désertion</h3>
+                    <span class="card-type">ÉVÉNEMENT NÉGATIF</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Chaque joueur perd 1 Milicien de sa Base Principale (si possible).
+                    </div>
+                    <p><strong>Résolution :</strong> Si aucun Milicien, perdez 1 Soldat à la place.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">21</div>
+                    <h3 class="card-title">Tempête Radioactive</h3>
+                    <span class="card-type">ÉVÉNEMENT NÉGATIF</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Aucune production de ressources au prochain tour pour TOUS les joueurs.
+                    </div>
+                    <p><strong>Impact :</strong> Ralentit considérablement la progression.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">22</div>
+                    <h3 class="card-title">Trahison</h3>
+                    <span class="card-type">ÉVÉNEMENT SPÉCIAL</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Le joueur avec le plus d'Artefacts doit en donner 1 (au choix) au
+                        joueur avec le moins d'Artefacts.
+                    </div>
+                    <p><strong>Résolution :</strong> En cas d'égalité, le donneur choisit le receveur.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">23</div>
+                    <h3 class="card-title">Révolte Civile</h3>
+                    <span class="card-type">ÉVÉNEMENT NÉGATIF</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Chaque joueur perd 1 action au prochain tour (minimum 1 action).
+                    </div>
+                    <p><strong>Impact :</strong> Ralentit les stratégies agressives.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">24</div>
+                    <h3 class="card-title">Découverte Scientifique</h3>
+                    <span class="card-type">ÉVÉNEMENT POSITIF</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Le joueur avec le niveau de Recherche le plus BAS gagne +3 Matériaux.
+                    </div>
+                    <p><strong>Résolution :</strong> En cas d'égalité, tous les joueurs à égalité reçoivent le bonus.
+                    </p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">25</div>
+                    <h3 class="card-title">Ravitaillement Aérien</h3>
+                    <span class="card-type">ÉVÉNEMENT POSITIF</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Tous les joueurs gagnent +2 Nourriture et +2 Munitions.
+                    </div>
+                    <p><strong>Impact :</strong> Rare carte entièrement positive !</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">26</div>
+                    <h3 class="card-title">Accalmie</h3>
+                    <span class="card-type">ÉVÉNEMENT NEUTRE</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Aucun effet. La situation reste stable ce tour.
+                    </div>
+                    <p><strong>Fréquence :</strong> 2 exemplaires dans le paquet.</p>
+                </div>
+
+                <div class="crisis-card">
+                    <div class="card-number">27</div>
+                    <h3 class="card-title">Fausse Alerte</h3>
+                    <span class="card-type">ÉVÉNEMENT NEUTRE</span>
+                    <div class="card-effect">
+                        <strong>Effet :</strong> Aucun effet. Les capteurs ont détecté une menace inexistante.
+                    </div>
+                    <p><strong>Fréquence :</strong> 2 exemplaires dans le paquet.</p>
+                </div>
+            </div>
+
+            <h2>📊 Statistiques & Probabilités</h2>
+            <div class="warning-box">
+                <h3>Répartition des Cartes</h3>
+                <ul>
+                    <li><strong>Assauts Zombies :</strong> 10/30 (33%) - Combats directs</li>
+                    <li><strong>Infection +1 :</strong> 3/30 (10%) - Augmentation modérée</li>
+                    <li><strong>Infection +2 :</strong> 2/30 (7%) - Augmentation importante</li>
+                    <li><strong>Infection +3 :</strong> 1/30 (3%) - Augmentation critique</li>
+                    <li><strong>Événements Négatifs :</strong> 7/30 (23%) - Pertes de ressources/unités</li>
+                    <li><strong>Événements Positifs :</strong> 2/30 (7%) - Bonus rares</li>
+                    <li><strong>Événements Neutres :</strong> 4/30 (13%) - Aucun effet</li>
+                    <li><strong>Événements Spéciaux :</strong> 1/30 (3%) - Effets uniques</li>
+                </ul>
+            </div>
+
+            <div class="danger-box">
+                <h3>⚠️ Cartes les Plus Dangereuses</h3>
+                <ol>
+                    <li><strong>Horde Massive (Carte 10) :</strong> 4d6 Zombies sur votre Base = potentiellement 24
+                        Zombies !</li>
+                    <li><strong>Épidémie Fulgurante (Carte 13) :</strong> +3 Infection d'un coup</li>
+                    <li><strong>Assaut Coordonné (Carte 6) :</strong> Tous les joueurs attaqués simultanément</li>
+                    <li><strong>Sabotage (Carte 19) :</strong> Peut retarder la victoire de plusieurs tours</li>
+                    <li><strong>Tempête Radioactive (Carte 21) :</strong> Aucune production = économie paralysée</li>
+                </ol>
+            </div>
+
+            <div class="info-box">
+                <h3>💡 Conseils pour Gérer les Cartes Crise</h3>
+                <ul>
+                    <li><strong>Gardez toujours 5+ Soldats sur votre Base</strong> pour survivre aux Assauts massifs
+                    </li>
+                    <li><strong>Ne stockez pas trop de ressources</strong> - les cartes de perte affectent les joueurs
+                        riches</li>
+                    <li><strong>Récupérez le Schéma de Synthèse en priorité</strong> pour annuler les augmentations
+                        d'Infection</li>
+                    <li><strong>Avec le Guérisseur + Schéma</strong>, vous êtes quasi-immunisé aux cartes d'Infection
+                    </li>
+                    <li><strong>Les cartes "Accalmie" et "Fausse Alerte"</strong> représentent 13% du paquet -
+                        profitez-en !</li>
+                </ul>
+            </div>
+
+            <h2>🎲 Variantes Optionnelles</h2>
+            <div class="success-box"
+                style="background: rgba(16, 185, 129, 0.1); padding: 25px; border-radius: 10px; border-left: 5px solid #10b981;">
+                <h3>Mode "Apocalypse" (Difficulté Extrême)</h3>
+                <p>Retirez les 4 cartes neutres (Accalmie x2 + Fausse Alerte x2) du paquet pour une partie beaucoup plus
+                    difficile !</p>
+
+                <h3 style="margin-top: 25px;">Mode "Débutant" (Difficulté Réduite)</h3>
+                <p>Ajoutez 5 cartes "Accalmie" supplémentaires au paquet pour donner plus de temps aux nouveaux joueurs.
+                </p>
+
+                <h3 style="margin-top: 25px;">Mode "Chaos Total"</h3>
+                <p>Piochez 2 Cartes Crise par tour au lieu d'une seule. Parties rapides et intenses garanties !</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase Client -->
+    <script src="game/supabase-client.js"></script>
+</body>
+
+</html>

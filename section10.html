@@ -1,0 +1,652 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Tableaux de Référence - 
+    <!-- Security Headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; frame-ancestors 'none';">
+    
+    <!-- Anti-Caching for Security -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <!-- Security Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.min.js"></script>
+    
+    <!-- Security System -->
+    <script src="game/security-system.js"></script>
+    <script src="game/security-headers.js"></script>
+    <script src="game/security-testing.js"></script>
+Z-SURVIVAL</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Roboto:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #0f0c29;
+            background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+            color: #f5f5f5;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(220, 20, 60, 0.4);
+        }
+
+        .back-link {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #fff;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-family: 'Cinzel', serif;
+            color: #FF6347;
+            font-size: 32px;
+            margin: 40px 0 20px 0;
+            padding-left: 15px;
+            border-left: 5px solid #DC143C;
+        }
+
+        h3 {
+            color: #FF6347;
+            font-size: 24px;
+            margin: 30px 0 15px 0;
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+        }
+
+        th {
+            padding: 20px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        td {
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: rgba(220, 20, 60, 0.1);
+        }
+
+        .compact-table td,
+        .compact-table th {
+            padding: 12px 15px;
+            font-size: 14px;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            border-left: 5px solid #3b82f6;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            border-left: 5px solid #10b981;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 10px;
+            border-left: 5px solid #f59e0b;
+        }
+
+        strong {
+            color: #FF6347;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #DC143C 0%, #FF6347 100%);
+            padding: 3px 10px;
+            border-radius: 5px;
+            font-weight: 700;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        @media (max-width: 968px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .quick-ref-card {
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.1) 0%, rgba(139, 0, 0, 0.2) 100%);
+            border: 2px solid #DC143C;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .quick-ref-card h4 {
+            color: #FF6347;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .quick-ref-card ul {
+            margin-left: 20px;
+        }
+
+        .quick-ref-card li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Retour au Menu</a>
+
+        <div class="header">
+            <h1>📊 Tableaux de Référence Rapide</h1>
+            <p style="font-size: 18px; opacity: 0.9;">Toutes les données essentielles en un coup d'œil</p>
+        </div>
+
+        <div class="content">
+            <div class="info-box">
+                <p><strong>💡 Utilisation :</strong> Cette section regroupe tous les tableaux importants pour jouer sans
+                    avoir à chercher dans les règles. Gardez cette page ouverte pendant vos parties !</p>
+            </div>
+
+            <h2>🛡️ Coûts des Unités</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Unité</th>
+                        <th>Munitions</th>
+                        <th>Nourriture</th>
+                        <th>Matériaux</th>
+                        <th>Force</th>
+                        <th>Capacité Spéciale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Milicien</strong></td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>1 dé rouge</td>
+                        <td>Aucune</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Soldat</strong></td>
+                        <td>2</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>1 dé noir</td>
+                        <td>+1 en défense</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Commando</strong></td>
+                        <td>3</td>
+                        <td>2</td>
+                        <td>2</td>
+                        <td>1 dé noir + 1 dé rouge</td>
+                        <td>Relance 1 dé par combat</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>🏭 Production des Territoires</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type de Territoire</th>
+                        <th>Production</th>
+                        <th>Bonus</th>
+                        <th>Défense Initiale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Base Principale</strong></td>
+                        <td>2 Munitions, 2 Nourriture, 2 Matériaux</td>
+                        <td>Indestructible</td>
+                        <td>3 Soldats</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Capitale</strong></td>
+                        <td>1 Munitions, 1 Nourriture, 1 Matériaux</td>
+                        <td>+1 Action/tour</td>
+                        <td>2 Miliciens</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Foyer Primaire</strong></td>
+                        <td>Aucune</td>
+                        <td>Contient 1 Artefact</td>
+                        <td>5 Zombies</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zone Neutre</strong></td>
+                        <td>Variable (1 ressource au choix)</td>
+                        <td>Aucun</td>
+                        <td>Aucune</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>🧪 Coûts de la Recherche</h2>
+            <table class="compact-table">
+                <thead>
+                    <tr>
+                        <th>Niveau</th>
+                        <th>Coût Total</th>
+                        <th>Coût Incrémental</th>
+                        <th>Effet</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Niveau 1</strong></td>
+                        <td>3 Matériaux</td>
+                        <td>3</td>
+                        <td>Déblocage initial</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Niveau 2</strong></td>
+                        <td>8 Matériaux</td>
+                        <td>+5</td>
+                        <td>Progression</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Niveau 3</strong></td>
+                        <td>15 Matériaux</td>
+                        <td>+7</td>
+                        <td>Progression</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Niveau 4</strong></td>
+                        <td>24 Matériaux</td>
+                        <td>+9</td>
+                        <td>Progression</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Niveau 5</strong></td>
+                        <td>35 Matériaux</td>
+                        <td>+11</td>
+                        <td><span class="highlight">Condition de Victoire</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>🎲 Valeurs des Dés</h2>
+            <div class="grid-2">
+                <div class="quick-ref-card">
+                    <h4>🔴 Dé Rouge (d6)</h4>
+                    <ul>
+                        <li>Faces : 1, 2, 3, 4, 5, 6</li>
+                        <li>Moyenne : 3.5</li>
+                        <li>Utilisé par : Miliciens</li>
+                        <li>Relance : Héros Stratège</li>
+                    </ul>
+                </div>
+                <div class="quick-ref-card">
+                    <h4>⚫ Dé Noir (d8)</h4>
+                    <ul>
+                        <li>Faces : 1, 2, 3, 4, 5, 6, 7, 8</li>
+                        <li>Moyenne : 4.5</li>
+                        <li>Utilisé par : Soldats, Commandos</li>
+                        <li>Bonus : +1 en défense</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>🦸 Capacités des Héros</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Héros</th>
+                        <th>Capacité</th>
+                        <th>Utilisation</th>
+                        <th>Meilleur Pour</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Le Stratège</strong></td>
+                        <td>Relance 1 dé d'attaque/tour</td>
+                        <td>1x par tour</td>
+                        <td>Joueurs agressifs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>L'Ingénieur</strong></td>
+                        <td>-1 Matériau pour construire</td>
+                        <td>Passif</td>
+                        <td>Économie & défense</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Le Guérisseur</strong></td>
+                        <td>Réduit Infection de -1/tour</td>
+                        <td>Automatique</td>
+                        <td>Parties longues</td>
+                    </tr>
+                    <tr>
+                        <td><strong>L'Éclaireur</strong></td>
+                        <td>+1 Action/tour</td>
+                        <td>Passif</td>
+                        <td>Expansion rapide</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>💎 Effets des Artefacts</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Artefact</th>
+                        <th>Effet</th>
+                        <th>Priorité</th>
+                        <th>Localisation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Échantillon Viral Muté</strong></td>
+                        <td>Relance 1 dé défense vs Zombies/tour</td>
+                        <td>2/3</td>
+                        <td>Foyer Primaire 1</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Schéma de Synthèse</strong></td>
+                        <td>Annule 1 Infection/tour</td>
+                        <td><span class="highlight">3/3 (CRITIQUE)</span></td>
+                        <td>Foyer Primaire 2</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Catalyseur d'Antidote</strong></td>
+                        <td>Base immune aux Raids</td>
+                        <td>1/3</td>
+                        <td>Foyer Primaire 3</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>⚔️ Résolution des Combats</h2>
+            <div class="success-box">
+                <h3>Procédure Étape par Étape</h3>
+                <ol style="margin-left: 20px; margin-top: 15px;">
+                    <li><strong>Déclaration :</strong> L'attaquant annonce le territoire cible</li>
+                    <li><strong>Sélection :</strong> Attaquant et défenseur choisissent leurs unités</li>
+                    <li><strong>Lancer :</strong> Chacun lance ses dés simultanément</li>
+                    <li><strong>Bonus :</strong> Appliquer les bonus (Soldats +1, Héros, Artefacts)</li>
+                    <li><strong>Comparaison :</strong> Score le plus élevé gagne (égalité = défenseur gagne)</li>
+                    <li><strong>Pertes :</strong> Le perdant perd TOUTES ses unités engagées</li>
+                    <li><strong>Conquête :</strong> Si attaquant gagne, il prend le territoire</li>
+                </ol>
+            </div>
+
+            <h2>🤖 Bot de Crise - Calcul de Force</h2>
+            <table class="compact-table">
+                <thead>
+                    <tr>
+                        <th>Méthode</th>
+                        <th>Formule</th>
+                        <th>Quand Utiliser</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Méthode 1 : Carte</strong></td>
+                        <td>Force indiquée sur la Carte Crise</td>
+                        <td>Si la carte précise une force</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Méthode 2 : Dés</strong></td>
+                        <td>2d6 (2 à 12 Zombies)</td>
+                        <td>Si la carte dit "Lancez 2d6"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Méthode 3 : Infection</strong></td>
+                        <td>Niveau Infection ÷ 2 (arrondi supérieur)</td>
+                        <td>Si aucune indication</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>📈 Niveaux d'Infection Mondiale</h2>
+            <table class="compact-table">
+                <thead>
+                    <tr>
+                        <th>Niveau</th>
+                        <th>Effet</th>
+                        <th>Danger</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>0-3</strong></td>
+                        <td>Début de partie, peu de menaces</td>
+                        <td style="color: #10b981;">🟢 Faible</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4-7</strong></td>
+                        <td>Assauts modérés, vigilance requise</td>
+                        <td style="color: #f59e0b;">🟡 Moyen</td>
+                    </tr>
+                    <tr>
+                        <td><strong>8-11</strong></td>
+                        <td>Assauts fréquents et puissants</td>
+                        <td style="color: #f97316;">🟠 Élevé</td>
+                    </tr>
+                    <tr>
+                        <td><strong>12-14</strong></td>
+                        <td>Situation critique, défaite imminente</td>
+                        <td style="color: #DC143C;">🔴 Critique</td>
+                    </tr>
+                    <tr>
+                        <td><strong>15+</strong></td>
+                        <td><span class="highlight">DÉFAITE COLLECTIVE</span></td>
+                        <td style="color: #8B0000;">💀 Fin de Partie</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>🎯 Actions Disponibles par Tour</h2>
+            <div class="grid-2">
+                <div class="quick-ref-card">
+                    <h4>Actions de Base (3 + Bonus)</h4>
+                    <ul>
+                        <li>Recruter 1 unité = 1 action</li>
+                        <li>Attaquer 1 territoire = 1 action</li>
+                        <li>Raider 1 adversaire = 1 action</li>
+                        <li>Déplacer des unités = 1 action</li>
+                        <li>Investir en Recherche = 1 action</li>
+                        <li>Transférer un Artefact = 1 action</li>
+                    </ul>
+                </div>
+                <div class="quick-ref-card">
+                    <h4>Bonus d'Actions</h4>
+                    <ul>
+                        <li>+1 par Capitale contrôlée</li>
+                        <li>+1 si Héros = L'Éclaireur</li>
+                        <li>Exemple : 2 Capitales + Éclaireur = 6 actions/tour</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>🏆 Conditions de Victoire</h2>
+            <div class="success-box">
+                <h3>Pour Gagner, vous devez SIMULTANÉMENT :</h3>
+                <ol style="margin-left: 20px; margin-top: 15px; font-size: 18px;">
+                    <li>✅ Posséder les <strong>3 Artefacts du Remède</strong> sur votre Base Principale</li>
+                    <li>✅ Avoir atteint le <strong>Niveau 5 de Recherche</strong></li>
+                </ol>
+                <p style="margin-top: 20px;"><strong>⚠️ Important :</strong> Vous pouvez atteindre ces conditions dans
+                    n'importe quel ordre, mais les deux doivent être remplies pour gagner !</p>
+            </div>
+
+            <h2>💀 Conditions de Défaite</h2>
+            <div class="warning-box">
+                <h3>Vous perdez si :</h3>
+                <ul style="margin-left: 20px; margin-top: 15px;">
+                    <li><strong>Défaite Collective :</strong> L'Infection Mondiale atteint 15</li>
+                    <li><strong>Défaite Individuelle :</strong> Votre Base Principale est conquise</li>
+                    <li><strong>Élimination :</strong> Vous ne contrôlez plus aucun territoire</li>
+                </ul>
+            </div>
+
+            <h2>⏱️ Déroulement d'un Tour</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Ordre</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1. Production</strong></td>
+                        <td>Simultané</td>
+                        <td>Récupérer ressources de tous vos territoires</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. Action</strong></td>
+                        <td>Tour par tour</td>
+                        <td>Effectuer 3+ actions (recruter, attaquer, etc.)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3. Crise</strong></td>
+                        <td>Simultané</td>
+                        <td>Piocher 1 Carte Crise et résoudre l'effet</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>🎴 Résumé des Cartes Crise</h2>
+            <div class="info-box">
+                <p><strong>30 Cartes au total</strong> réparties en :</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>10 Assauts Zombies :</strong> Attaque d'un territoire spécifique</li>
+                    <li><strong>8 Augmentations d'Infection :</strong> +1 ou +2 Infection Mondiale</li>
+                    <li><strong>6 Événements Spéciaux :</strong> Effets variés (perte de ressources, etc.)</li>
+                    <li><strong>6 Cartes Neutres/Bonus :</strong> Pas d'effet négatif ou bonus mineur</li>
+                </ul>
+            </div>
+
+            <h2>📋 Aide-Mémoire Rapide</h2>
+            <div class="grid-2">
+                <div class="quick-ref-card">
+                    <h4>🎯 Début de Tour</h4>
+                    <ul>
+                        <li>✅ Récupérer ressources</li>
+                        <li>✅ Compter vos actions (3 + bonus)</li>
+                        <li>✅ Planifier votre stratégie</li>
+                    </ul>
+                </div>
+                <div class="quick-ref-card">
+                    <h4>⚔️ Pendant le Combat</h4>
+                    <ul>
+                        <li>✅ Lancer tous les dés</li>
+                        <li>✅ Ajouter +1 par Soldat</li>
+                        <li>✅ Appliquer bonus Héros/Artefacts</li>
+                        <li>✅ Égalité = défenseur gagne</li>
+                    </ul>
+                </div>
+                <div class="quick-ref-card">
+                    <h4>🤖 Phase de Crise</h4>
+                    <ul>
+                        <li>✅ Piocher 1 Carte Crise</li>
+                        <li>✅ Lire l'effet à voix haute</li>
+                        <li>✅ Résoudre immédiatement</li>
+                        <li>✅ Défausser la carte</li>
+                    </ul>
+                </div>
+                <div class="quick-ref-card">
+                    <h4>🏆 Fin de Partie</h4>
+                    <ul>
+                        <li>✅ Vérifier conditions de victoire</li>
+                        <li>✅ Vérifier Infection ≠ 15</li>
+                        <li>✅ Annoncer le vainqueur</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase Client -->
+    <script src="game/supabase-client.js"></script>
+</body>
+
+</html>

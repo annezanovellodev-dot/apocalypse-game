@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Z-Survival - Déroulement
+    <!-- Security Headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; frame-ancestors 'none';">
+    
+    <!-- Anti-Caching for Security -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <!-- Security Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.min.js"></script>
+    
+    <!-- Security System -->
+    <script src="game/security-system.js"></script>
+    <script src="game/security-headers.js"></script>
+    <script src="game/security-testing.js"></script>
+ d'un Tour</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Orbitron:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a1a2e;
+            --secondary-color: #16213e;
+            --accent-color: #0f3460;
+            --highlight-color: #e94560;
+            --text-color: #f1f1f1;
+            --text-muted: #a8a8a8;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --card-bg: rgba(26, 26, 46, 0.8);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #0f0c29;
+            background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--highlight-color), transparent);
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #e94560);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        /* Navigation */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--text-color);
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .back-link::before {
+            content: '←';
+            margin-right: 8px;
+            color: var(--highlight-color);
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+            background: linear-gradient(45deg, #e94560, #ff6b81);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(233, 69, 96, 0.5));
+        }
+
+        .card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: #fff;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-body {
+            line-height: 1.8;
+        }
+
+        /* Phase Card */
+        .phase-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--highlight-color);
+            transition: all 0.3s ease;
+        }
+
+        .phase-card:hover {
+            transform: translateX(5px);
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .phase-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: var(--highlight-color);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 1rem;
+            font-weight: bold;
+        }
+
+        .phase-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            color: #fff;
+            margin: 0 0 1rem 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .phase-content {
+            padding-left: 2.5rem;
+        }
+
+        /* Action List */
+        .action-list {
+            list-style: none;
+            margin: 1rem 0 0 0;
+            padding: 0;
+        }
+
+        .action-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .action-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .action-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: var(--highlight-color);
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .action-details h4 {
+            margin: 0 0 0.3rem 0;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .action-details p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge-primary {
+            background: rgba(30, 144, 255, 0.2);
+            color: #70a1ff;
+        }
+
+        .badge-success {
+            background: rgba(46, 213, 115, 0.2);
+            color: #2ed573;
+        }
+
+        .badge-warning {
+            background: rgba(255, 165, 0, 0.2);
+            color: #ffa500;
+        }
+
+        .badge-danger {
+            background: rgba(255, 71, 87, 0.2);
+            color: #ff6b81;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--highlight-color);
+            color: #fff;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">Retour au Menu</a>
+
+        <header class="header">
+            <h1>⏳ Déroulement d'un Tour</h1>
+            <p>Phases, actions et gestion des ressources</p>
+        </header>
+
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('phases')">Phases de Jeu</div>
+            <div class="tab" onclick="showTab('actions')">Actions Disponibles</div>
+            <div class="tab" onclick="showTab('ressources')">Gestion des Ressources</div>
+        </div>
+
+        <div id="phases" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">🔄</span>
+                    <h2 class="card-title">Phases d'un Tour</h2>
+                </div>
+                <div class="card-body">
+                    <p>Chaque tour de jeu est divisé en 4 phases distinctes, jouées dans l'ordre suivant :</p>
+                    
+                    <div class="phase-card">
+                        <h3 class="phase-title">
+                            <span class="phase-number">1</span>
+                            Phase d'Initiative
+                        </h3>
+                        <div class="phase-content">
+                            <p>Déterminez l'ordre de jeu pour ce tour :</p>
+                            <ul style="margin: 0.5rem 0 0 1.5rem;">
+                                <li>Chaque joueur lance 1d6 et ajoute son bonus d'initiative</li>
+                                <li>Les joueurs jouent dans l'ordre décroissant du résultat</li>
+                                <li>En cas d'égalité, le joueur avec le plus haut bonus d'initiative joue en premier</li>
+                            </ul>
+                            <div style="margin-top: 1rem;">
+                                <span class="badge badge-primary">Important</span>
+                                <span class="badge badge-warning">Simultané</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="phase-card">
+                        <h3 class="phase-title">
+                            <span class="phase-number">2</span>
+                            Phase d'Action
+                        </h3>
+                        <div class="phase-content">
+                            <p>À tour de rôle, chaque joueur effectue ses actions :</p>
+                            <ul style="margin: 0.5rem 0 0 1.5rem;">
+                                <li>1 action principale (obligatoire)</li>
+                                <li>1 action secondaire (optionnelle)</li>
+                                <li>Mouvements libres (jusqu'à la limite de mouvement)</li>
+                            </ul>
+                            <div style="margin-top: 1rem;">
+                                <span class="badge badge-success">Tour par Tour</span>
+                                <span class="badge badge-warning">Stratégie</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="phase-card">
+                        <h3 class="phase-title">
+                            <span class="phase-number">3</span>
+                            Phase d'Événement
+                        </h3>
+                        <div class="phase-content">
+                            <p>Un événement aléatoire se produit :</p>
+                            <ul style="margin: 0.5rem 0 0 1.5rem;">
+                                <li>Piochez une carte Événement</li>
+                                <li>Résolvez ses effets immédiatement</li>
+                                <li>Certains événements peuvent durer plusieurs tours</li>
+                            </ul>
+                            <div style="margin-top: 1rem;">
+                                <span class="badge badge-danger">Aléatoire</span>
+                                <span class="badge badge-warning">Inattendu</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="phase-card">
+                        <h3 class="phase-title">
+                            <span class="phase-number">4</span>
+                            Phase de Maintien
+                        </h3>
+                        <div class="phase-content">
+                            <p>Résolvez les effets de fin de tour :</p>
+                            <ul style="margin: 0.5rem 0 0 1.5rem;">
+                                <li>Réduisez les durées des effets d'un tour</li>
+                                <li>Vérifiez les conditions de victoire</li>
+                                <li>Préparez le prochain tour</li>
+                            </ul>
+                            <div style="margin-top: 1rem;">
+                                <span class="badge badge-primary">Obligatoire</span>
+                                <span class="badge badge-success">Fin de Tour</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="actions" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">🎯</span>
+                    <h2 class="card-title">Actions Disponibles</h2>
+                </div>
+                <div class="card-body">
+                    <p>Pendant la phase d'action, chaque joueur peut effectuer les actions suivantes :</p>
+                    
+                    <h3 style="margin: 2rem 0 1rem; color: var(--highlight-color);">Actions Principales</h3>
+                    <ul class="action-list">
+                        <li class="action-item">
+                            <span class="action-icon">⚔️</span>
+                            <div class="action-details">
+                                <h4>Attaquer</h4>
+                                <p>Effectuez une attaque contre une cible à portée. Lancez les dés d'attaque et comparez à la défense de la cible.</p>
+                            </div>
+                        </li>
+                        <li class="action-item">
+                            <span class="action-icon">🏃</span>
+                            <div class="action-details">
+                                <h4>Se Déplacer</h4>
+                                <p>Déplacez votre unité d'un nombre de cases égal à sa vitesse. Les terrains difficiles coûtent 2 points de mouvement.</p>
+                            </div>
+                        </li>
+                        <li class="action-item">
+                            <span class="action-icon">🎒</span>
+                            <div class="action-details">
+                                <h4>Fouiller</h4>
+                                <p>Explorez une zone pour trouver des objets, des ressources ou des indices. Nécessite un jet de chance.</p>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <h3 style="margin: 2rem 0 1rem; color: var(--highlight-color);">Actions Secondaires</h3>
+                    <ul class="action-list">
+                        <li class="action-item">
+                            <span class="action-icon">🛡️</span>
+                            <div class="action-details">
+                                <h4>Se Défendre</h4>
+                                <p>Préparez une défense. +2 à la défense jusqu'à votre prochain tour.</p>
+                            </div>
+                        </li>
+                        <li class="action-item">
+                            <span class="action-icon">💊</span>
+                            <div class="action-details">
+                                <h4>Soigner</h4>
+                                <p>Restaurez 1d6 points de vie à une unité adjacente. Consomme une trousse de soin.</p>
+                            </div>
+                        </li>
+                        <li class="action-item">
+                            <span class="action-icon">🔍</span>
+                            <div class="action-details">
+                                <h4>Examiner</h4>
+                                <p>Étudiez une cible pour révéler ses statistiques et capacités spéciales.</p>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px; border-left: 4px solid var(--highlight-color);">
+                        <h3>💡 Conseil Stratégique</h3>
+                        <p>Combinez vos actions principales et secondaires pour des tours plus efficaces. Par exemple, déplacez-vous puis attaquez, ou soignez un allié avant de vous mettre en position défensive.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="ressources" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">💰</span>
+                    <h2 class="card-title">Gestion des Ressources</h2>
+                </div>
+                <div class="card-body">
+                    <p>Les ressources sont essentielles pour progresser dans le jeu. Voici comment les gérer efficacement :</p>
+                    
+                    <div class="grid" style="margin: 2rem 0;">
+                        <div class="phase-card">
+                            <h3 class="phase-title" style="color: #ff6b81;">Nourriture</h3>
+                            <div class="phase-content">
+                                <p><strong>Utilisation :</strong> Nourrir vos unités, soigner</p>
+                                <p><strong>Obtention :</strong> Chasse, récolte, échange</p>
+                                <p><strong>Conseil :</strong> Gardez toujours des réserves pour éviter la famine</p>
+                            </div>
+                        </div>
+
+                        <div class="phase-card">
+                            <h3 class="phase-title" style="color: #70a1ff;">Métal</h3>
+                            <div class="phase-content">
+                                <p><strong>Utilisation :</strong> Armes, armures, constructions</p>
+                                <p><strong>Obtention :</strong> Minage, récupération, échange</p>
+                                <p><strong>Conseil :</strong> Essentiel pour améliorer votre équipement</p>
+                            </div>
+                        </div>
+
+                        <div class="phase-card">
+                            <h3 class="phase-title" style="color: #2ed573;">Énergie</h3>
+                            <div class="phase-content">
+                                <p><strong>Utilisation :</strong> Technologies, bâtiments avancés</p>
+                                <p><strong>Obtention :</strong> Générateurs, panneaux solaires</p>
+                                <p><strong>Conseil :</strong> Investissez tôt dans la production d'énergie</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 2rem 0 1rem; color: var(--highlight-color);">Conseils de Gestion</h3>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>Équilibrez votre production en fonction de vos objectifs</li>
+                        <li>Échangez les surplus avec d'autres joueurs si les règles le permettent</li>
+                        <li>Protégez vos sources de ressources des menaces extérieures</li>
+                        <li>Planifiez à l'avance pour les coûts de maintenance</li>
+                    </ul>
+
+                    <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px; border-left: 4px solid var(--highlight-color);">
+                        <h3>⚠️ Attention aux Pénuries</h3>
+                        <p>Si vous n'avez pas assez de ressources pour entretenir vos unités ou bâtiments, vous pourriez subir des pénalités. Surveillez régulièrement vos stocks !</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gestion des onglets
+        function showTab(tabId) {
+            // Masquer tous les contenus d'onglet
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Désactiver tous les onglets
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Activer l'onglet sélectionné
+            document.getElementById(tabId).classList.add('active');
+            
+            // Trouver et activer le bouton de l'onglet correspondant
+            const tabs = document.querySelectorAll('.tab');
+            for (let i = 0; i < tabs.length; i++) {
+                if (tabs[i].getAttribute('onclick').includes(tabId)) {
+                    tabs[i].classList.add('active');
+                    break;
+                }
+            }
+        }
+
+        // Animation des icônes
+        document.addEventListener('DOMContentLoaded', function() {
+            const icons = document.querySelectorAll('.card-icon, .phase-number, .action-icon');
+            icons.forEach((icon, index) => {
+                // Ajouter un délai pour un effet de vague
+                icon.style.animationDelay = `${index * 0.1}s`;
+                icon.classList.add('floating');
+            });
+        });
+    </script>
+
+    <!-- Supabase Client -->
+    <script src="game/supabase-client.js"></script>
+</body>
+</html>

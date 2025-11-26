@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Z-Survival - Combat
+    <!-- Security Headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; frame-ancestors 'none';">
+    
+    <!-- Anti-Caching for Security -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <!-- Security Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.min.js"></script>
+    
+    <!-- Security System -->
+    <script src="game/security-system.js"></script>
+    <script src="game/security-headers.js"></script>
+    <script src="game/security-testing.js"></script>
+ et Dégâts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Orbitron:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a1a2e;
+            --secondary-color: #16213e;
+            --accent-color: #0f3460;
+            --highlight-color: #e94560;
+            --text-color: #f1f1f1;
+            --text-muted: #a8a8a8;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --card-bg: rgba(26, 26, 46, 0.8);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #0f0c29;
+            background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--highlight-color), transparent);
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #e94560);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        /* Navigation */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--text-color);
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .back-link::before {
+            content: '←';
+            margin-right: 8px;
+            color: var(--highlight-color);
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+            background: linear-gradient(45deg, #e94560, #ff6b81);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(233, 69, 96, 0.5));
+        }
+
+        .card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: #fff;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Combat Card */
+        .combat-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--highlight-color);
+            transition: all 0.3s ease;
+        }
+
+        .combat-card:hover {
+            transform: translateX(5px);
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .combat-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            color: #fff;
+            margin: 0 0 1rem 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .combat-icon {
+            font-size: 1.8rem;
+            margin-right: 1rem;
+            color: var(--highlight-color);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--highlight-color);
+            margin: 0.5rem 0;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Damage Table */
+        .damage-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .damage-table th, 
+        .damage-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .damage-table th {
+            background: rgba(0, 0, 0, 0.3);
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            color: var(--highlight-color);
+        }
+
+        .damage-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .damage-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge-primary {
+            background: rgba(30, 144, 255, 0.2);
+            color: #70a1ff;
+        }
+
+        .badge-success {
+            background: rgba(46, 213, 115, 0.2);
+            color: #2ed573;
+        }
+
+        .badge-warning {
+            background: rgba(255, 165, 0, 0.2);
+            color: #ffa500;
+        }
+
+        .badge-danger {
+            background: rgba(255, 71, 87, 0.2);
+            color: #ff6b81;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-right: 0.5rem;
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--highlight-color);
+            color: #fff;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dashed var(--highlight-color);
+            cursor: help;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">Retour au Menu</a>
+
+        <header class="header">
+            <h1>⚔️ Combat et Dégâts</h1>
+            <p>Règles de combat, calcul des dégâts et effets spéciaux</p>
+        </header>
+
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('base')">Bases du Combat</div>
+            <div class="tab" onclick="showTab('damage')">Calcul des Dégâts</div>
+            <div class="tab" onclick="showTab('special')">Effets Spéciaux</div>
+        </div>
+
+        <div id="base" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">⚔️</span>
+                    <h2 class="card-title">Les Bases du Combat</h2>
+                </div>
+                <div class="card-body">
+                    <p>Le combat dans Z-SURVIVAL se déroule en tours alternés. Voici comment procéder :</p>
+                    
+                    <div class="combat-card">
+                        <h3 class="combat-title">
+                            <span class="combat-icon">🎯</span>
+                            Déclaration d'Attaque
+                        </h3>
+                        <p>Le joueur actif déclare quelle unité attaque et quelle cible elle vise. L'attaquant et la cible doivent être à portée d'attaque.</p>
+                        <div style="margin-top: 1rem;">
+                            <span class="badge badge-primary">Portée : 1-2 cases</span>
+                            <span class="badge badge-warning">Ligne de vue requise</span>
+                        </div>
+                    </div>
+
+                    <div class="combat-card">
+                        <h3 class="combat-title">
+                            <span class="combat-icon">🎲</span>
+                            Jet d'Attaque
+                        </h3>
+                        <p>L'attaquant lance 1d20 et ajoute son bonus d'attaque. Si le résultat est égal ou supérieur à la Défense de la cible, l'attaque touche.</p>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <div class="stat-label">Jet d'Attaque</div>
+                                <div class="stat-value">1d20 + ATK</div>
+                                <div class="stat-label">vs Défense</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Bonus de Couverture</div>
+                                <div class="stat-value">+2 / +5</div>
+                                <div class="stat-label">Abri / Couverture Totale</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="combat-card">
+                        <h3 class="combat-title">
+                            <span class="combat-icon">💥</span>
+                            Résolution des Dégâts
+                        </h3>
+                        <p>Si l'attaque touche, lancez les dés de dégâts et appliquez les bonus/malus. Soustrayez l'Armure de la cible pour obtenir les dégâts finaux.</p>
+                        
+                        <table class="damage-table">
+                            <thead>
+                                <tr>
+                                    <th>Arme</th>
+                                    <th>Dégâts</th>
+                                    <th>Portée</th>
+                                    <th>Spécial</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Pistolet</td>
+                                    <td>1d6</td>
+                                    <td>1-3</td>
+                                    <td>Recharge 1</td>
+                                </tr>
+                                <tr>
+                                    <td>Fusil d'Assaut</td>
+                                    <td>2d4</td>
+                                    <td>1-4</td>
+                                    <td>Rafale (2 cartouches)</td>
+                                </tr>
+                                <tr>
+                                    <td>Artefact Ancien</td>
+                                    <td>1d10</td>
+                                    <td>1-2</td>
+                                    <td>Ignore l'Armure</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="damage" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">💥</span>
+                    <h2 class="card-title">Calcul des Dégâts</h2>
+                </div>
+                <div class="card-body">
+                    <p>Le calcul des dégâts est une étape cruciale qui détermine l'efficacité de vos attaques.</p>
+                    
+                    <div class="combat-card">
+                        <h3 class="combat-title">
+                            <span class="combat-icon">🧮</span>
+                            Formule de Base
+                        </h3>
+                        <p>Dégâts finaux = (Jet de dégâts + Bonus) - Réduction d'armure</p>
+                        
+                        <div class="stats-grid" style="margin-top: 1.5rem;">
+                            <div class="stat-box">
+                                <div class="stat-label">Dégâts de Base</div>
+                                <div class="stat-value">1d6 + FOR</div>
+                                <div class="stat-label">Corps à corps</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Dégâts de Base</div>
+                                <div class="stat-value">1d8 + DEX</div>
+                                <div class="stat-label">À distance</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="combat-card">
+                        <h3 class="combat-title">
+                            <span class="combat-icon">🛡️</span>
+                            Réduction des Dégâts
+                        </h3>
+                        <p>L'armure réduit les dégâts reçus. Certaines attaques peuvent ignorer partiellement ou totalement l'armure.</p>
+                        
+                        <div class="stats-grid" style="margin-top: 1.5rem;">
+                            <div class="stat-box">
+                                <div class="stat-label">Armure Légère</div>
+                                <div class="stat-value">1-2 pts</div>
+                                <div class="stat-label">+1 DEX max</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Armure Moyenne</div>
+                                <div class="stat-value">3-4 pts</div>
+                                <div class="stat-label">DEX max +0</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Armure Lourde</div>
+                                <div class="stat-value">5-6 pts</div>
+                                <div class="stat-label">DEX max -1</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="combat-card">
+                        <h3 class="combat-title">
+                            <span class="combat-icon">🎯</span>
+                            Coups Critiques
+                        </h3>
+                        <p>Un jet d'attaque naturel de 20 est toujours un coup critique. Certaines capacités peuvent étendre cette plage.</p>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(255, 0, 0, 0.1); border-radius: 8px; border-left: 4px solid #ff4757;">
+                            <h4>Effet des Coups Critiques</h4>
+                            <ul style="margin: 0.5rem 0 0 1.5rem;">
+                                <li>Doublez les dés de dégâts</li>
+                                <li>Ignorez l'armure de la cible</li>
+                                <li>Appliquez un effet spécial si l'arme en possède un</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="special" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">✨</span>
+                    <h2 class="card-title">Effets Spéciaux</h2>
+                </div>
+                <div class="card-body">
+                    <p>Certaines attaques et capacités peuvent infliger des effets spéciaux en plus des dégâts normaux.</p>
+                    
+                    <div class="grid" style="margin: 2rem 0; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                        <div class="combat-card">
+                            <h3 class="combat-title" style="color: #ff6b81;">💀 Empoisonné</h3>
+                            <p>La cible subit 1d4 dégâts par tour pendant 3 tours. Peut être soigné par une action de soin.</p>
+                            <div style="margin-top: 1rem;">
+                                <span class="badge badge-danger">Dégâts sur la durée</span>
+                            </div>
+                        </div>
+
+                        <div class="combat-card">
+                            <h3 class="combat-title" style="color: #70a1ff;">❄️ Gelé</h3>
+                            <p>La cible rate son prochain tour. La glace fond après 1 tour ou avec une source de chaleur.</p>
+                            <div style="margin-top: 1rem;">
+                                <span class="badge badge-primary">Contrôle de foule</span>
+                            </div>
+                        </div>
+
+                        <div class="combat-card">
+                            <h3 class="combat-title" style="color: #ffa502;">🔥 Enflammé</h3>
+                            <p>La cible subit 1d6 dégâts par tour pendant 2 tours. Peut se propager aux cases adjacentes.</p>
+                            <div style="margin-top: 1rem;">
+                                <span class="badge badge-warning">Zone de contrôle</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="combat-card">
+                        <h3 class="combat-title">
+                            <span class="combat-icon">🔄</span>
+                            Combo et Synergies
+                        </h3>
+                        <p>Certains effets peuvent se combiner pour des résultats dévastateurs :</p>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; background: linear-gradient(45deg, rgba(255, 107, 129, 0.1), rgba(112, 161, 255, 0.1)); border-radius: 8px; border-left: 4px solid #9c88ff;">
+                            <h4>Exemple de Combo</h4>
+                            <p><strong>Gel + Choc Thermique :</strong> Une cible gelée qui subit des dégâts de feu subit des dégâts critiques et l'effet gel est immédiatement dissipé.</p>
+                            <p><strong>Électrocution + Eau :</strong> Les attaques électriques touchent toutes les unités dans l'eau à portée.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gestion des onglets
+        function showTab(tabId) {
+            // Masquer tous les contenus d'onglet
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Désactiver tous les onglets
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Activer l'onglet sélectionné
+            document.getElementById(tabId).classList.add('active');
+            
+            // Trouver et activer le bouton de l'onglet correspondant
+            const tabs = document.querySelectorAll('.tab');
+            for (let i = 0; i < tabs.length; i++) {
+                if (tabs[i].getAttribute('onclick').includes(tabId)) {
+                    tabs[i].classList.add('active');
+                    break;
+                }
+            }
+        }
+
+        // Animation des icônes
+        document.addEventListener('DOMContentLoaded', function() {
+            const icons = document.querySelectorAll('.card-icon, .combat-icon, .stat-value');
+            icons.forEach((icon, index) => {
+                // Ajouter un délai pour un effet de vague
+                icon.style.animationDelay = `${index * 0.1}s`;
+                icon.classList.add('pulse');
+            });
+        });
+    </script>
+
+    <!-- Supabase Client -->
+    <script src="game/supabase-client.js"></script>
+</body>
+</html>

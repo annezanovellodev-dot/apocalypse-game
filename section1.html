@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Z-Survival - But du Jeu</title>
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; frame-ancestors 'none';">
+    
+    <!-- Anti-Caching for Security -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <!-- Security Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.min.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Orbitron:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Security System -->
+    <script src="game/security-system.js"></script>
+    <script src="game/security-headers.js"></script>
+    <script src="game/security-testing.js"></script>
+    <style>
+        :root {
+            --primary-color: #1a1a2e;
+            --secondary-color: #16213e;
+            --accent-color: #0f3460;
+            --highlight-color: #e94560;
+            --text-color: #f1f1f1;
+            --text-muted: #a8a8a8;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --card-bg: rgba(26, 26, 46, 0.8);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #0f0c29;
+            background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--highlight-color), transparent);
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #e94560);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        /* Navigation */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--text-color);
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .back-link::before {
+            content: '←';
+            margin-right: 8px;
+            color: var(--highlight-color);
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+            background: linear-gradient(45deg, #e94560, #ff6b81);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(233, 69, 96, 0.5));
+        }
+
+        .card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: #fff;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-body {
+            line-height: 1.8;
+        }
+
+        /* Specific Card Types */
+        .card.victory {
+            background: linear-gradient(135deg, rgba(25, 42, 41, 0.8), rgba(17, 29, 28, 0.8));
+            border: 1px solid rgba(46, 213, 115, 0.2);
+        }
+
+        .card.victory .card-icon {
+            background: linear-gradient(45deg, #2ed573, #7bed9f);
+            -webkit-background-clip: text;
+        }
+
+        .card.defeat {
+            background: linear-gradient(135deg, rgba(66, 26, 35, 0.8), rgba(41, 16, 22, 0.8));
+            border: 1px solid rgba(255, 71, 87, 0.2);
+        }
+
+        .card.defeat .card-icon {
+            background: linear-gradient(45deg, #ff4757, #ff6b81);
+            -webkit-background-clip: text;
+        }
+
+        .card.info {
+            background: linear-gradient(135deg, rgba(26, 35, 66, 0.8), rgba(16, 22, 41, 0.8));
+            border: 1px solid rgba(30, 144, 255, 0.2);
+        }
+
+        .card.info .card-icon {
+            background: linear-gradient(45deg, #1e90ff, #70a1ff);
+            -webkit-background-clip: text;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        /* Stats Cards */
+        .stat-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            background: linear-gradient(45deg, #fff, #e94560);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Lists */
+        .feature-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .feature-list li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--highlight-color);
+            font-weight: bold;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">Retour au Menu</a>
+
+        <header class="header">
+            <h1>⚔️ But du Jeu</h1>
+            <p>Conditions de victoire, défaite et objectifs principaux</p>
+        </header>
+
+        <div class="card info">
+            <div class="card-header">
+                <span class="card-icon">📜</span>
+                <h2 class="card-title">Titre et Concept</h2>
+            </div>
+            <div class="card-body">
+                <p>Bienvenue dans <strong>Z-SURVIVAL : PILLAGE & PANDÉMIE</strong>, un jeu de stratégie intense où vous devez survivre à une apocalypse zombie tout en luttant contre la propagation d'un virus mortel.</p>
+                
+                <div class="grid" style="margin: 2rem 0;">
+                    <div class="stat-card">
+                        <div class="stat-label">Joueurs</div>
+                        <div class="stat-value">2-6</div>
+                        <p>Affrontez-vous ou formez des équipes de 2-3 joueurs</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Durée</div>
+                        <div class="stat-value">90-150min</div>
+                        <p>Une expérience intense et stratégique</p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Âge</div>
+                        <div class="stat-value">14+</div>
+                        <p>Complexité stratégique élevée</p>
+                    </div>
+                </div>
+
+                <h3 style="margin: 2rem 0 1rem; color: var(--highlight-color);">🎮 Style de Jeu</h3>
+                <div class="grid">
+                    <div>
+                        <h4>🎲 Stratégie Territoriale</h4>
+                        <p>Contrôlez des territoires, gérez des ressources et prenez des décisions tactiques pour survivre.</p>
+                    </div>
+                    <div>
+                        <h4>🧟 PvE & PvP</h4>
+                        <p>Affrontez les zombies et les autres joueurs dans une lutte pour la survie.</p>
+                    </div>
+                    <div>
+                        <h4>📈 Gestion de Ressources</h4>
+                        <p>Gérez soigneusement vos ressources pour ne pas succomber à la faim ou à la maladie.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card victory">
+            <div class="card-header">
+                <span class="card-icon">🏆</span>
+                <h2 class="card-title">Condition de Victoire</h2>
+            </div>
+            <div class="card-body">
+                <p>Pour gagner la partie, vous devez accomplir <strong>deux conditions</strong> :</p>
+                
+                <div style="background: rgba(46, 213, 115, 0.1); padding: 1.5rem; border-radius: 10px; margin: 1.5rem 0; border-left: 4px solid #2ed573;">
+                    <h3 style="color: #2ed573; margin-bottom: 1rem;">🎯 Les 2 Étapes de la Victoire</h3>
+                    <ol style="margin-left: 1.5rem; line-height: 2;">
+                        <li><strong>Accomplir votre Objectif Personnel</strong> - Chaque joueur reçoit une carte objectif secrète au début de la partie</li>
+                        <li><strong>Récupérer le Vaccin Suprême</strong> - Obtenez l'artefact ultime pour valider votre victoire</li>
+                    </ol>
+                </div>
+
+                <h3>📋 Comment ça Marche</h3>
+                <ol style="margin-left: 1.5rem; line-height: 2;">
+                    <li>Piochez une carte objectif secrète au début</li>
+                    <li>Accomplissez les conditions de votre objectif personnel</li>
+                    <li>Récupérez le Vaccin Suprême (via les 4 artefacts du remède)</li>
+                    <li>Annoncez votre victoire au début de votre tour</li>
+                    <li>Révélez votre objectif + le Vaccin Suprême</li>
+                    <li>Victoire immédiate !</li>
+                </ol>
+
+                <div class="grid" style="margin-top: 2rem;">
+                    <div>
+                        <h4>🎯 Types d'Objectifs</h4>
+                        <p>Contrôle territorial, richesse, recherche scientifique, conquête, protection, infiltration...</p>
+                    </div>
+                    <div>
+                        <h4>💉 Vaccin Suprême</h4>
+                        <p>Nécessite les 4 artefacts du remède. Sert de validation finale de votre victoire.</p>
+                    </div>
+                </div>
+
+                <div style="background: rgba(46, 213, 115, 0.1); padding: 1.5rem; border-radius: 10px; margin-top: 1.5rem; border-left: 4px solid #2ed573;">
+                    <h4>💡 Conseil du Maître</h4>
+                    <p>L'objectif reste secret ! Les autres joueurs devineront vos intentions par vos actions. Jouez stratégiquement pour les tromper tout en progressant vers votre but.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card defeat">
+            <div class="card-header">
+                <span class="card-icon">💀</span>
+                <h2 class="card-title">Condition de Défaite</h2>
+            </div>
+            <div class="card-body">
+                <p>Chaque joueur possède son propre marqueur d'<strong>Infection de Base</strong>. Si le marqueur d'infection de votre base atteint le niveau maximal <strong>20</strong>, <strong>VOUS PERDEZ LA PARTIE</strong> et êtes éliminé. Les autres joueurs continuent la partie.</p>
+                
+                <div style="text-align: center; margin: 2rem 0; padding: 1.5rem; background: rgba(255, 71, 87, 0.1); border-radius: 10px; border-left: 4px solid #ff4757;">
+                    <p style="font-style: italic; font-size: 1.2rem;">"Votre base est tombue. L'infection vous a vaincu."</p>
+                </div>
+
+                <h3>⚠️ Augmentation de l'Infection de Base</h3>
+                <p>L'infection de votre base augmente dans les situations suivantes :</p>
+                
+                <div class="grid" style="margin: 1.5rem 0;">
+                    <div style="background: rgba(255, 71, 87, 0.1); padding: 1rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.8rem; font-weight: bold; color: #ff6b81;">+3</div>
+                        <div>Échec d'un Test de Crise</div>
+                    </div>
+                    <div style="background: rgba(255, 71, 87, 0.1); padding: 1rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.8rem; font-weight: bold; color: #ff6b81;">+2</div>
+                        <div>Raid échoué</div>
+                    </div>
+                    <div style="background: rgba(255, 71, 87, 0.1); padding: 1rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.8rem; font-weight: bold; color: #ff6b81;">+1</div>
+                        <div>Perte de territoire</div>
+                    </div>
+                    <div style="background: rgba(255, 71, 87, 0.1); padding: 1rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.8rem; font-weight: bold; color: #ff6b81;">Varie</div>
+                        <div>Cartes Crise</div>
+                    </div>
+                </div>
+
+                <h3>🔥 Bonus des Artefacts</h3>
+                <p>Certains artefacts peuvent offrir un bonus pour réduire l'infection de votre base :</p>
+                <ul style="margin: 1rem 0 0 1.5rem;">
+                    <li><strong>Artefact de Contention</strong> : Réduit l'infection de base de 5 points</li>
+                    <li><strong>Artefact de Purification</strong> : Annule l'augmentation d'infection pour un tour</li>
+                    <li><strong>Artefact de Résistance</strong> : Réduit de moitié les augmentations d'infection</li>
+                </ul>
+
+                <div style="background: rgba(255, 71, 87, 0.1); padding: 1.5rem; border-radius: 10px; margin-top: 1.5rem; border-left: 4px solid #ff4757;">
+                    <h4>💡 Stratégie de Survie</h4>
+                    <p>L'infection est une mécanique de pression temporelle. Les joueurs doivent constamment équilibrer leurs actions entre progression et contrôle de l'infection. Travailler ensemble pour contenir les foyers d'infection peut être la clé de la survie de tous !</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="background: linear-gradient(135deg, rgba(41, 26, 66, 0.8), rgba(25, 16, 41, 0.8)); border: 1px solid rgba(132, 94, 194, 0.2);">
+            <div class="card-header">
+                <span class="card-icon" style="background: linear-gradient(45deg, #8b5cf6, #c4b5fd); -webkit-background-clip: text;">📋</span>
+                <h2 class="card-title">Résumé Rapide</h2>
+            </div>
+            <div class="card-body">
+                <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 1.5rem; border-radius: 10px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.05);">
+                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">🏆</div>
+                        <h3 style="margin: 0 0 1rem; color: #fff;">Victoire</h3>
+                        <p>3 Artefacts à la Base Principale</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                            <span style="background: rgba(46, 213, 115, 0.2); color: #2ed573; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">Début Phase 2</span>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 1.5rem; border-radius: 10px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.05);">
+                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">💀</div>
+                        <h3 style="margin: 0 0 1rem; color: #fff;">Défaite</h3>
+                        <p>Infection Mondiale = 15</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                            <span style="background: rgba(255, 71, 87, 0.2); color: #ff6b81; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">Fin de tour</span>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 1.5rem; border-radius: 10px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.05);">
+                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎯</div>
+                        <h3 style="margin: 0 0 1rem; color: #fff;">Objectif</h3>
+                        <p>Trouver les 3 Artefacts dans les Foyers Primaires</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                            <span style="background: rgba(30, 144, 255, 0.2); color: #70a1ff; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">Pendant la partie</span>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 1.5rem; border-radius: 10px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.05);">
+                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">⏱️</div>
+                        <h3 style="margin: 0 0 1rem; color: #fff;">Pression</h3>
+                        <p>L'Infection augmente constamment</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                            <span style="background: rgba(255, 165, 0, 0.2); color: #ffa500; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">Chaque tour</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add floating animation to icons
+        document.addEventListener('DOMContentLoaded', function() {
+            const icons = document.querySelectorAll('.card-icon');
+            icons.forEach((icon, index) => {
+                // Add delay to each icon for a wave effect
+                icon.style.animationDelay = `${index * 0.2}s`;
+                icon.classList.add('floating');
+            });
+        });
+    </script>
+
+    <!-- Supabase Client -->
+    <script src="game/supabase-client.js"></script>
+</body>
+</html>

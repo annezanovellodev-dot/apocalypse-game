@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Z-SURVIVAL - Test Runner</title>
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self';">
+    
+    <!-- Security Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a0f, #1a1a2e);
+            color: #fff;
+            font-family: 'Orbitron', monospace;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #e94560, #ff6b81);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header p {
+            color: #888;
+            font-size: 1.1rem;
+        }
+        
+        .test-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .unlock-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .unlock-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            color: #fff;
+            font-size: 1.2rem;
+            text-align: center;
+            margin-right: 10px;
+            width: 300px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .unlock-input:focus {
+            border-color: #e94560;
+            box-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+        }
+        
+        .unlock-button {
+            background: linear-gradient(45deg, #e94560, #ff6b81);
+            border: none;
+            border-radius: 10px;
+            padding: 15px 30px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .unlock-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.4);
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .test-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .test-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .test-card h3 {
+            color: #e94560;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .test-card p {
+            color: #aaa;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .test-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 10px 20px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .test-button:hover {
+            background: rgba(233, 69, 96, 0.2);
+            border-color: #e94560;
+        }
+        
+        .test-button.running {
+            background: #ffa502;
+            animation: pulse 1s infinite;
+        }
+        
+        .test-button.success {
+            background: #2ed573;
+        }
+        
+        .test-button.error {
+            background: #ff4757;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .results-panel {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .result-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        
+        .result-item.success {
+            background: rgba(46, 213, 115, 0.1);
+            border-left: 3px solid #2ed573;
+        }
+        
+        .result-item.error {
+            background: rgba(255, 71, 87, 0.1);
+            border-left: 3px solid #ff4757;
+        }
+        
+        .result-item.info {
+            background: rgba(52, 152, 219, 0.1);
+            border-left: 3px solid #3498db;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .status-indicator.success {
+            background: #2ed573;
+        }
+        
+        .status-indicator.error {
+            background: #ff4757;
+        }
+        
+        .status-indicator.running {
+            background: #ffa502;
+            animation: pulse 1s infinite;
+        }
+        
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .quick-button:hover {
+            background: rgba(233, 69, 96, 0.2);
+            border-color: #e94560;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Z-SURVIVAL Test Runner</h1>
+            <p>Outil de test de sécurité TITANESQUE</p>
+        </div>
+        
+        <div class="test-panel">
+            <div class="unlock-section">
+                <h3>🔓 Déverrouiller le Mode Test</h3>
+                <p>Entrez un code de déverrouillage pour activer les tests de sécurité</p>
+                <div style="margin-top: 20px;">
+                    <input type="text" id="unlockCode" class="unlock-input" placeholder="Code de déverrouillage" value="Jij125689Huh/*++*/huH986521jiJ">
+                    <button class="unlock-button" onclick="unlockTestMode()">🔓 Déverrouiller</button>
+                </div>
+                <div style="margin-top: 10px; color: #888; font-size: 0.9rem;">
+                    Codes valides: Jij125689Huh/*++*/huH986521jiJ (admin), 021208, TITAN_2024, SECURITY_UNLOCK, ADMIN_ACCESS, TEST_UNLOCK_2024</div>
+            </div>
+            
+            <div class="quick-actions">
+                <button class="quick-button" onclick="runAllTests()">🚀 Tous les tests</button>
+                <button class="quick-button" onclick="testXSS()">🛡️ XSS</button>
+                <button class="quick-button" onclick="testDevTools()">🔧 DevTools</button>
+                <button class="quick-button" onclick="testAutomation()">🤖 Automatisation</button>
+                <button class="quick-button" onclick="testMobile()">📱 Mobile</button>
+                <button class="quick-button" onclick="clearResults()">🗑️ Effacer</button>
+            </div>
+            
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>🛡️ Protection XSS</h3>
+                    <p>Test des injections de code et scripts malveillants</p>
+                    <button class="test-button" onclick="testXSS()">Lancer le test XSS</button>
+                </div>
+                
+                <div class="test-card">
+                    <h3>🔧 Détection DevTools</h3>
+                    <p>Détection des outils de développement</p>
+                    <button class="test-button" onclick="testDevTools()">Lancer le test DevTools</button>
+                </div>
+                
+                <div class="test-card">
+                    <h3>🤖 Anti-Automatisation</h3>
+                    <p>Détection des outils comme Postman, curl</p>
+                    <button class="test-button" onclick="testAutomation()">Lancer le test Automatisation</button>
+                </div>
+                
+                <div class="test-card">
+                    <h3>📱 Validation Mobile</h3>
+                    <p>Vérification de l'accès mobile uniquement</p>
+                    <button class="test-button" onclick="testMobile()">Lancer le test Mobile</button>
+                </div>
+                
+                <div class="test-card">
+                    <h3>🔍 Fingerprinting</h3>
+                    <p>Test d'identification unique des appareils</p>
+                    <button class="test-button" onclick="testFingerprint()">Lancer le test Fingerprint</button>
+                </div>
+                
+                <div class="test-card">
+                    <h3>🌐 Validation URL</h3>
+                    <p>Vérification des domaines autorisés</p>
+                    <button class="test-button" onclick="testURL()">Lancer le test URL</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="results-panel">
+            <h3>📊 Résultats des Tests</h3>
+            <div id="results"></div>
+        </div>
+    </div>
+    
+    <!-- Scripts de sécurité -->
+    <script src="security-system.js"></script>
+    <script src="security-admin-panel.js"></script>
+    <script src="security-headers.js"></script>
+    <script src="security-testing.js"></script>
+    
+    <script>
+        let testModeUnlocked = false;
+        let testResults = [];
+        
+        function addResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item ' + type;
+            
+            const statusClass = type === 'success' ? 'success' : type === 'error' ? 'error' : 'running';
+            
+            resultItem.innerHTML = '<span class="status-indicator ' + statusClass + '"></span>' +
+                '<span>[' + new Date().toLocaleTimeString() + '] ' + message + '</span>';
+            
+            resultsDiv.insertBefore(resultItem, resultsDiv.firstChild);
+            
+            // Limiter à 50 résultats
+            while (resultsDiv.children.length > 50) {
+                resultsDiv.removeChild(resultsDiv.lastChild);
+            }
+        }
+        
+        function unlockTestMode() {
+            const code = document.getElementById('unlockCode').value;
+            
+            addResult("Tentative de déverrouillage avec le code: " + code, 'info');
+            
+            if (typeof enableSecurityTestMode === 'function' && enableSecurityTestMode(code)) {
+                testModeUnlocked = true;
+                addResult('✅ Mode test de sécurité activé avec succès!', 'success');
+                
+                // Désactiver le bouton de déverrouillage
+                document.querySelector('.unlock-button').disabled = true;
+                document.querySelector('.unlock-input').disabled = true;
+                
+                // Activer les boutons de test
+                const testButtons = document.querySelectorAll('.test-button, .quick-button');
+                testButtons.forEach(btn => {
+                    btn.disabled = false;
+                });
+                
+            } else {
+                addResult('❌ Code de déverrouillage invalide!', 'error');
+            }
+        }
+        
+        function runAllTests() {
+            if (!testModeUnlocked) {
+                addResult('❌ Veuillez d\'abord déverrouiller le mode test!', 'error');
+                return;
+            }
+            
+            addResult('🚀 Lancement de tous les tests de sécurité...', 'info');
+            
+            if (typeof securityTesting !== 'undefined' && securityTesting.runAllTests) {
+                securityTesting.runAllTests();
+            } else {
+                addResult('⚠️ Module de test non disponible', 'error');
+            }
+            addResult('✅ Tests terminés!', 'success');
+        }
+        
+        function testXSS() {
+            if (!testModeUnlocked) {
+                addResult('❌ Veuillez d\'abord déverrouiller le mode test!', 'error');
+                return;
+            }
+            
+            addResult('🛡️ Test de protection XSS...', 'info');
+            
+            // Simuler une injection XSS
+            const testPayload = '<script>alert("XSS Test")<\/script>';
+            const testDiv = document.createElement('div');
+            testDiv.innerHTML = testPayload;
+            
+            if (testDiv.innerHTML.includes('<script>')) {
+                addResult('❌ XSS non bloqué - Vulnérabilité détectée!', 'error');
+            } else {
+                addResult('✅ XSS bloqué avec succès!', 'success');
+            }
+        }
+        
+        function testDevTools() {
+            if (!testModeUnlocked) {
+                addResult('❌ Veuillez d\'abord déverrouiller le mode test!', 'error');
+                return;
+            }
+            
+            addResult('🔧 Test de détection DevTools...', 'info');
+            
+            // Simuler l'ouverture des DevTools
+            const outerHeight = window.outerHeight;
+            const innerHeight = window.innerHeight;
+            const difference = outerHeight - innerHeight;
+            
+            if (difference > 200) {
+                addResult('⚠️ DevTools probablement ouverts!', 'error');
+            } else {
+                addResult('✅ DevTools non détectés', 'success');
+            }
+        }
+        
+        function testAutomation() {
+            if (!testModeUnlocked) {
+                addResult('❌ Veuillez d\'abord déverrouiller le mode test!', 'error');
+                return;
+            }
+            
+            addResult('🤖 Test de détection d\'automatisation...', 'info');
+            
+            const userAgent = navigator.userAgent;
+            const automationTools = ['postman', 'curl', 'wget', 'python-requests'];
+            
+            const detected = automationTools.some(tool => userAgent.toLowerCase().includes(tool));
+            
+            if (detected) {
+                addResult('⚠️ Outil d\'automatisation détecté!', 'error');
+            } else {
+                addResult('✅ Aucun outil d\'automatisation détecté', 'success');
+            }
+        }
+        
+        function testMobile() {
+            if (!testModeUnlocked) {
+                addResult('❌ Veuillez d\'abord déverrouiller le mode test!', 'error');
+                return;
+            }
+            
+            addResult('📱 Test de validation mobile...', 'info');
+            
+            const isMobile = /android|iphone|ipad|ipod|blackberry|windows phone/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                addResult('✅ Accès mobile détecté', 'success');
+            } else {
+                addResult('⚠️ Accès depuis ordinateur détecté (devrait être bloqué en production)', 'error');
+            }
+        }
+        
+        function testFingerprint() {
+            if (!testModeUnlocked) {
+                addResult('❌ Veuillez d\'abord déverrouiller le mode test!', 'error');
+                return;
+            }
+            
+            addResult('🔍 Test de fingerprinting...', 'info');
+            
+            // Générer un fingerprint
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.textBaseline = 'top';
+            ctx.font = '14px Arial';
+            ctx.fillText('Fingerprint test', 2, 2);
+            
+            const fingerprint = canvas.toDataURL();
+            
+            if (fingerprint.length > 0) {
+                addResult('✅ Fingerprint généré avec succès', 'success');
+                addResult("📏 Taille du fingerprint: " + fingerprint.length + " caractères", 'info');
+            } else {
+                addResult('❌ Erreur de génération du fingerprint', 'error');
+            }
+        }
+        
+        function testURL() {
+            if (!testModeUnlocked) {
+                addResult('❌ Veuillez d\'abord déverrouiller le mode test!', 'error');
+                return;
+            }
+            
+            addResult('🌐 Test de validation d\'URL...', 'info');
+            
+            const currentDomain = window.location.hostname;
+            const allowedDomains = ['zsurvival.netlify.app', 'zsurvivalgame.netlify.app', 'localhost', '127.0.0.1'];
+            
+            const isAllowed = allowedDomains.some(domain => currentDomain.includes(domain));
+            
+            if (isAllowed) {
+                addResult('✅ Domaine autorisé', 'success');
+                addResult("📍 Domaine actuel: " + currentDomain, 'info');
+            } else {
+                addResult('❌ Domaine non autorisé!', 'error');
+            }
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+            addResult('🗑️ Résultats effacés', 'info');
+        }
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            addResult('🚀 Test Runner initialisé', 'info');
+            addResult('🔓 Veuillez déverrouiller le mode test pour commencer', 'info');
+            
+            // Désactiver les boutons de test au début
+            document.querySelectorAll('.test-button').forEach(btn => {
+                btn.disabled = true;
+            });
+        });
+        
+        // Tests automatiques au chargement
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                addResult('🔍 Vérification automatique de l\'environnement...', 'info');
+                
+                // Vérifier si les scripts de sécurité sont chargés
+                if (typeof TitanSecuritySystem !== 'undefined') {
+                    addResult('✅ Système de sécurité Titan chargé', 'success');
+                } else {
+                    addResult('❌ Système de sécurité non chargé!', 'error');
+                }
+                
+                if (typeof SecurityTestingFramework !== 'undefined') {
+                    addResult('✅ Framework de test chargé', 'success');
+                } else {
+                    addResult('❌ Framework de test non chargé!', 'error');
+                }
+                
+                // Vérifier l'environnement
+                const isMobile = /android|iphone|ipad|ipod|blackberry|windows phone/i.test(navigator.userAgent);
+                addResult('📱 Environnement: ' + (isMobile ? 'Mobile' : 'Desktop'), 'info');
+                
+            }, 1000);
+        });
+    </script>
+
+    <!-- Supabase Client -->
+    <script src="supabase-client.js"></script>
+</body>
+</html>

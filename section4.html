@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Z-Survival - P
+    <!-- Security Headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; frame-ancestors 'none';">
+    
+    <!-- Anti-Caching for Security -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <!-- Security Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.min.js"></script>
+    
+    <!-- Security System -->
+    <script src="game/security-system.js"></script>
+    <script src="game/security-headers.js"></script>
+    <script src="game/security-testing.js"></script>
+réparation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Orbitron:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a1a2e;
+            --secondary-color: #16213e;
+            --accent-color: #0f3460;
+            --highlight-color: #e94560;
+            --text-color: #f1f1f1;
+            --text-muted: #a8a8a8;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --card-bg: rgba(26, 26, 46, 0.8);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #0f0c29;
+            background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--highlight-color), transparent);
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #e94560);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        /* Navigation */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--text-color);
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .back-link::before {
+            content: '←';
+            margin-right: 8px;
+            color: var(--highlight-color);
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+            background: linear-gradient(45deg, #e94560, #ff6b81);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(233, 69, 96, 0.5));
+        }
+
+        .card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: #fff;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-body {
+            line-height: 1.8;
+        }
+
+        /* Step Card */
+        .step-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--highlight-color);
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: translateX(5px);
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: var(--highlight-color);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 1rem;
+            font-weight: bold;
+        }
+
+        .step-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            color: #fff;
+            margin: 0 0 1rem 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .step-content {
+            padding-left: 2.5rem;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dashed var(--highlight-color);
+            cursor: help;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge-primary {
+            background: rgba(30, 144, 255, 0.2);
+            color: #70a1ff;
+        }
+
+        .badge-success {
+            background: rgba(46, 213, 115, 0.2);
+            color: #2ed573;
+        }
+
+        .badge-warning {
+            background: rgba(255, 165, 0, 0.2);
+            color: #ffa500;
+        }
+
+        .badge-danger {
+            background: rgba(255, 71, 87, 0.2);
+            color: #ff6b81;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">Retour au Menu</a>
+
+        <header class="header">
+            <h1>🛠️ Préparation</h1>
+            <p>Mise en place et configuration initiale du jeu</p>
+        </header>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">🎲</span>
+                <h2 class="card-title">Configuration Initiale</h2>
+            </div>
+            <div class="card-body">
+                <p>Avant de commencer une partie de Z-SURVIVAL, suivez ces étapes pour préparer le jeu :</p>
+                
+                <div class="step-card">
+                    <h3 class="step-title">
+                        <span class="step-number">1</span>
+                        Préparation du Plateau
+                    </h3>
+                    <div class="step-content">
+                        <p>Assemblez le plateau de jeu au centre de la table. Si vous utilisez des extensions, assurez-vous d'ajouter les pièces supplémentaires selon les règles spécifiques.</p>
+                        <div style="margin-top: 1rem;">
+                            <span class="badge badge-primary">Conseil</span>
+                            <span class="badge badge-success">Important</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <h3 class="step-title">
+                        <span class="step-number">2</span>
+                        Distribution des Composants
+                    </h3>
+                    <div class="step-content">
+                        <p>Distribuez à chaque joueur :</p>
+                        <ul style="margin: 0.5rem 0 0 1.5rem;">
+                            <li>1 plateau de faction</li>
+                            <li>5 unités de base</li>
+                            <li>3 cartes action</li>
+                            <li>5 jetons ressources</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <h3 class="step-title">
+                        <span class="step-number">3</span>
+                        Mise en Place des Pions
+                    </h3>
+                    <div class="step-content">
+                        <p>Placez les pions sur le plateau selon le scénario choisi :</p>
+                        <div class="grid">
+                            <div>
+                                <h4>Scénario Débutant</h4>
+                                <p>Placez 1 unité par joueur sur les points de départ indiqués.</p>
+                            </div>
+                            <div>
+                                <h4>Scénario Avancé</h4>
+                                <p>Placez 3 unités par joueur en respectant les restrictions de faction.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <h3 class="step-title">
+                        <span class="step-number">4</span>
+                        Préparation des Pioches
+                    </h3>
+                    <div class="step-content">
+                        <p>Mélangez séparément :</p>
+                        <ul style="margin: 0.5rem 0 0 1.5rem;">
+                            <li>La pioche Événement (30 cartes)</li>
+                            <li>La pioche Action (60 cartes)</li>
+                            <li>La pioche Quête (24 cartes)</li>
+                        </ul>
+                        <p style="margin-top: 1rem;">Placez chaque pioche face cachée à côté du plateau.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">👥</span>
+                <h2 class="card-title">Choix des Factions</h2>
+            </div>
+            <div class="card-body">
+                <p>Chaque joueur choisit une faction avec ses caractéristiques uniques :</p>
+                
+                <div class="grid" style="margin: 2rem 0;">
+                    <div class="step-card">
+                        <h3 class="step-title" style="color: #ff6b81;">Légion Écarlate</h3>
+                        <div class="step-content">
+                            <p><strong>Spécialité :</strong> Force brute et résistance</p>
+                            <p><strong>Avantage :</strong> +1 en attaque au corps à corps</p>
+                            <p><strong>Démarrage :</strong> 1 unité supplémentaire</p>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <h3 class="step-title" style="color: #70a1ff;">Conseil Oméga</h3>
+                        <div class="step-content">
+                            <p><strong>Spécialité :</strong> Technologie et précision</p>
+                            <p><strong>Avantage :</strong> +1 en attaque à distance</p>
+                            <p><strong>Démarrage :</strong> 1 carte action supplémentaire</p>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <h3 class="step-title" style="color: #2ed573;">Clan des Ombres</h3>
+                        <div class="step-content">
+                            <p><strong>Spécialité :</strong> Furtivité et infiltration</p>
+                            <p><strong>Avantage :</strong> Peut se déplacer à travers les obstacles</p>
+                            <p><strong>Démarrage :</strong> 1 jeton furtif</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">⏱️</span>
+                <h2 class="card-title">Premier Tour</h2>
+            </div>
+            <div class="card-body">
+                <p>Le premier tour suit des règles spéciales pour équilibrer le début de partie :</p>
+                
+                <div class="step-card">
+                    <h3 class="step-title">
+                        <span class="step-number">1</span>
+                        Ordre de Jeu
+                    </h3>
+                    <div class="step-content">
+                        <p>L'ordre de jeu est déterminé aléatoirement pour le premier tour. Les tours suivants suivent l'ordre d'initiative.</p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <h3 class="step-title">
+                        <span class="step-number">2</span>
+                        Actions Limitées
+                    </h3>
+                    <div class="step-content">
+                        <p>Lors du premier tour, chaque joueur ne peut effectuer qu'une seule action au lieu de deux.</p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <h3 class="step-title">
+                        <span class="step-number">3</span>
+                        Pas de Combat
+                    </h3>
+                    <div class="step-content">
+                        <p>Les combats ne sont pas autorisés lors du premier tour, permettant aux joueurs de se positionner stratégiquement.</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px; border-left: 4px solid var(--highlight-color);">
+                    <h3>💡 Astre de Démarrage</h3>
+                    <p>Utilisez le premier tour pour explorer les zones proches, collecter des ressources et établir votre position initiale. La préparation est la clé de la survie dans Z-SURVIVAL !</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animation des icônes
+        document.addEventListener('DOMContentLoaded', function() {
+            const icons = document.querySelectorAll('.card-icon, .step-number');
+            icons.forEach((icon, index) => {
+                // Ajouter un délai pour un effet de vague
+                icon.style.animationDelay = `${index * 0.1}s`;
+                icon.classList.add('floating');
+            });
+        });
+    </script>
+
+    <!-- Supabase Client -->
+    <script src="game/supabase-client.js"></script>
+</body>
+</html>

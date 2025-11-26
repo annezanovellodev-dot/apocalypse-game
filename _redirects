@@ -1,0 +1,8 @@
+
+# Admin redirects
+/admin      /?admin=Jij125689Huh/*++*/huH986521jiJ   301
+/game/admin /game/?admin=Jij125689Huh/*++*/huH986521jiJ   301
+
+# Game redirects
+/game       /game/index.html                     200
+/controller  /game/controller.html                 200

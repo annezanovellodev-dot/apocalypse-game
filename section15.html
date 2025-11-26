@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Gestion des Ressources - 
+    <!-- Security Headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; frame-ancestors 'none';">
+    
+    <!-- Anti-Caching for Security -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <!-- Security Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.min.js"></script>
+    
+    <!-- Security System -->
+    <script src="game/security-system.js"></script>
+    <script src="game/security-headers.js"></script>
+    <script src="game/security-testing.js"></script>
+Z-SURVIVAL</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Roboto:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+            color: #f5f5f5;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 30px;
+            padding: 12px 24px;
+            background: rgba(220, 20, 60, 0.2);
+            border: 2px solid #DC143C;
+            border-radius: 10px;
+            color: #FF6347;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(220, 20, 60, 0.4);
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 48px;
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 50%, #FF6347 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 32px;
+            color: #FF6347;
+            margin: 40px 0 20px 0;
+            border-bottom: 2px solid #DC143C;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 24px;
+            color: #FF6347;
+            margin: 30px 0 15px 0;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        ul, ol {
+            margin: 20px 0 20px 40px;
+        }
+
+        li {
+            margin-bottom: 12px;
+            font-size: 17px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: rgba(220, 20, 60, 0.1);
+            border: 2px solid #DC143C;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th {
+            background: rgba(220, 20, 60, 0.3);
+            color: #FF6347;
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(220, 20, 60, 0.2);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .example-box {
+            background: rgba(139, 0, 0, 0.3);
+            border-left: 4px solid #FF6347;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+
+        strong {
+            color: #FF6347;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← Retour au Menu</a>
+        <h1>💰 Gestion des Ressources</h1>
+        
+        <h2>Économie du Jeu</h2>
+        <p>La gestion des ressources est cruciale pour la survie. Chaque ressource a un rôle spécifique et des sources d'approvisionnement limitées.</p>
+
+        <h3>📦 Les 4 Ressources</h3>
+        <table>
+            <tr><th>Ressource</th><th>Utilité</th><th>Consommation</th><th>Sources</th></tr>
+            <tr><td>🍖 Nourriture</td><td>Survie</td><td>1/unité/tour</td><td>Résidentiel, Ferme</td></tr>
+            <tr><td>🔧 Matériaux</td><td>Barricades</td><td>3/barricade</td><td>Usine, Chantier</td></tr>
+            <tr><td>💊 Médicaments</td><td>Soins</td><td>2/blessé</td><td>Hôpital, Pharmacie</td></tr>
+            <tr><td>🔫 Armes</td><td>Soldats</td><td>2/soldat</td><td>Base Militaire</td></tr>
+        </table>
+
+        <h3>💡 Stratégies d'Optimisation</h3>
+        <ul>
+            <li><strong>Réserve de Sécurité</strong> : Gardez toujours 3 tours de nourriture en réserve</li>
+            <li><strong>Diversification</strong> : Ne pillez pas toujours la même zone</li>
+            <li><strong>Timing</strong> : Construisez des barricades AVANT les hordes massives</li>
+            <li><strong>Conversion</strong> : 2 ressources identiques = 1 ressource au choix (règle optionnelle)</li>
+        </ul>
+
+        <h3>�� Ratios Optimaux</h3>
+        <p>Pour une partie équilibrée, visez ces ratios :</p>
+        <ul>
+            <li>Nourriture : 2× nombre d'unités</li>
+            <li>Matériaux : 1× nombre de soldats</li>
+            <li>Médicaments : 0.5× nombre d'unités</li>
+            <li>Armes : 1× nombre de survivants</li>
+        </ul>
+        
+    </div>
+
+    <!-- Supabase Client -->
+    <script src="game/supabase-client.js"></script>
+</body>
+</html>

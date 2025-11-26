@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Z-Survival -
+    <!-- Security Headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; frame-ancestors 'none';">
+    
+    <!-- Anti-Caching for Security -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <!-- Security Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.min.js"></script>
+    
+    <!-- Security System -->
+    <script src="game/security-system.js"></script>
+    <script src="game/security-headers.js"></script>
+    <script src="game/security-testing.js"></script>
+ Artefacts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Orbitron:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a1a2e;
+            --secondary-color: #16213e;
+            --accent-color: #0f3460;
+            --highlight-color: #e94560;
+            --text-color: #f1f1f1;
+            --text-muted: #a8a8a8;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --card-bg: rgba(26, 26, 46, 0.8);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #0f0c29;
+            background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--highlight-color), transparent);
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #e94560);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        /* Navigation */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--text-color);
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .back-link::before {
+            content: '←';
+            margin-right: 8px;
+            color: var(--highlight-color);
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+            background: linear-gradient(45deg, #e94560, #ff6b81);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(233, 69, 96, 0.5));
+        }
+
+        .card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: #fff;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Vaccine Supreme */
+        .vaccine-supreme {
+            text-align: center;
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .vaccine-image {
+            max-width: 300px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(233, 69, 96, 0.3);
+            border: 3px solid rgba(233, 69, 96, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .vaccine-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 25px 80px rgba(233, 69, 96, 0.4);
+        }
+
+        .vaccine-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            margin: 1.5rem 0 1rem;
+            background: linear-gradient(45deg, #ff6b81, #ffa502);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .vaccine-desc {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Artifact Cards */
+        .artifact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .artifact-card {
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(15, 52, 96, 0.9));
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .artifact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(233, 69, 96, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .artifact-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .artifact-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--highlight-color);
+            box-shadow: 0 20px 50px rgba(233, 69, 96, 0.3);
+        }
+
+        /* Artifact Images */
+        .artifact-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .artifact-image:hover {
+            transform: scale(1.1);
+        }
+
+        .artifact-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 0 20px rgba(233, 69, 96, 0.5));
+        }
+
+        .artifact-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+
+        .artifact-effect {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .artifact-threshold {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(233, 69, 96, 0.2);
+            border: 1px solid rgba(233, 69, 96, 0.5);
+            border-radius: 25px;
+            color: #ff6b81;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid var(--highlight-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .info-box h3 {
+            color: var(--highlight-color);
+            margin-bottom: 1rem;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 20px rgba(233, 69, 96, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(233, 69, 96, 0.6); }
+            100% { box-shadow: 0 0 20px rgba(233, 69, 96, 0.3); }
+        }
+
+        .glowing {
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .artifact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .vaccine-image {
+                max-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">Retour au Menu</a>
+
+        <header class="header">
+            <h1>🏺 Artefacts</h1>
+            <p>Les 4 artefacts du remède et leurs pouvoirs sacrés</p>
+        </header>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">💉</span>
+                <h2 class="card-title">Le Vaccin Suprême</h2>
+            </div>
+            <div class="card-body">
+                <div class="vaccine-supreme">
+                    <img src="Vaccin Suprème.png" alt="Vaccin Suprème" class="vaccine-image glowing">
+                    <h2 class="vaccine-title">Vaccin Suprême</h2>
+                    <p class="vaccine-desc">
+                        L'artefact ultime capable d'éradiquer complètement l'infection zombie. 
+                        Créé à partir des 4 artefacts du remède, il représente le dernier espoir de l'humanité.
+                    </p>
+                </div>
+
+                <div class="info-box">
+                    <h3>🌟 Légende du Vaccin Suprême</h3>
+                    <p>
+                        Selon les anciens textes, lorsque les quatre artefacts du remède sont réunis, 
+                        ils fusionnent pour créer le Vaccin Suprême. Cette substance légendaire peut 
+                        non seulement guérir l'infection, mais aussi immuniser définitivement contre toute mutation future.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">🔮</span>
+                <h2 class="card-title">Les Quatre Artefacts du Remède</h2>
+            </div>
+            <div class="card-body">
+                <p>Chaque artefact possède un pouvoir unique qui contribue à la création du Vaccin Suprême. 
+                   Rassemblez-les tous pour sauver l'humanité.</p>
+
+                <div class="artifact-grid">
+                    <div class="artifact-card">
+                        <div class="artifact-icon floating">🔮</div>
+                        <h3 class="artifact-name">Artefact de Contention</h3>
+                        <p class="artifact-effect">
+                            Réduit l'infection de base de 5 points instantanément. 
+                            Puissant pour stabiliser une situation critique.
+                        </p>
+                        <span class="artifact-threshold">Seuil: 8+</span>
+                    </div>
+
+                    <div class="artifact-card">
+                        <div class="artifact-icon floating" style="animation-delay: 0.5s;">💎</div>
+                        <h3 class="artifact-name">Artefact de Purification</h3>
+                        <p class="artifact-effect">
+                            Annule complètement l'augmentation d'infection pendant un tour entier. 
+                            Offert un répit précieux pour se réorganiser.
+                        </p>
+                        <span class="artifact-threshold">Seuil: 9+</span>
+                    </div>
+
+                    <div class="artifact-card">
+                        <div class="artifact-icon floating" style="animation-delay: 1s;">🛡️</div>
+                        <h3 class="artifact-name">Artefact de Résistance</h3>
+                        <p class="artifact-effect">
+                            Réduit de moitié toutes les augmentations d'infection pendant 3 tours. 
+                            Protection durable contre les menaces futures.
+                        </p>
+                        <span class="artifact-threshold">Seuil: 10+</span>
+                    </div>
+
+                    <div class="artifact-card">
+                        <div class="artifact-icon floating" style="animation-delay: 1.5s;">⚡</div>
+                        <h3 class="artifact-name">Artefact de Puissance</h3>
+                        <p class="artifact-effect">
+                            Octroie un bonus de +3 à tous les tests de crise pendant 2 tours. 
+                            Confère un avantage stratégique majeur.
+                        </p>
+                        <span class="artifact-threshold">Seuil: 11+</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">🎁</span>
+                <h2 class="card-title">Artefacts Bonus</h2>
+            </div>
+            <div class="card-body">
+                <p>En plus des 4 artefacts du remède, il existe 3 artefacts bonus qui offrent des avantages stratégiques pendant la partie.</p>
+
+                <div class="artifact-grid">
+                    <div class="artifact-card">
+                        <img src="La Synthèse.png" alt="La Synthèse" class="artifact-image">
+                        <h3 class="artifact-name">La Synthèse</h3>
+                        <p class="artifact-effect">
+                            Octroie +2 à tous les jets d'attaque pendant 3 tours. 
+                            Permet de percer les défenses ennemies avec une facilité surnaturelle.
+                        </p>
+                        <span class="artifact-threshold">Bot: 9+ sur d12</span>
+                    </div>
+
+                    <div class="artifact-card">
+                        <img src="Le Cataldoce.png" alt="Le Cataldoce" class="artifact-image">
+                        <h3 class="artifact-name">Le Cataldoce</h3>
+                        <p class="artifact-effect">
+                            Réduit tous les dégâts subis de 50% pendant 2 tours. 
+                            Une protection quasi-invulnérable contre toutes les menaces.
+                        </p>
+                        <span class="artifact-threshold">Bot: 10+ sur d12</span>
+                    </div>
+
+                    <div class="artifact-card">
+                        <img src="Echantillon Viral Muté.png" alt="Echantillon Viral Muté" class="artifact-image">
+                        <h3 class="artifact-name">Echantillon Viral Muté</h3>
+                        <p class="artifact-effect">
+                            Révèle toutes les cartes cachées des adversaires pendant 1 tour. 
+                            Vous permet d'anticiper leurs stratégies et de contrer leurs plans.
+                        </p>
+                        <span class="artifact-threshold">Bot: 8+ sur d12</span>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>🤖 Utilisation avec le Bot</h3>
+                    <p>
+                        Pour récupérer ces artefacts bonus, vous devez utiliser le bot de gestion des dés. 
+                        Chaque artefact a un seuil différent à atteindre sur un lancer de dé à 12 faces (d12) :
+                    </p>
+                    <ul style="margin: 1rem 0 0 1.5rem; line-height: 1.8;">
+                        <li><strong>La Synthèse</strong> : Faites 9 ou plus sur le d12</li>
+                        <li><strong>Le Cataldoce</strong> : Faites 10 ou plus sur le d12</li>
+                        <li><strong>Echantillon Viral Muté</strong> : Faites 8 ou plus sur le d12</li>
+                    </ul>
+                    <p style="margin-top: 1rem;">
+                        <strong>Comment procéder :</strong><br>
+                        1. Allez dans la section <strong>"Bot Partie"</strong> → onglet <strong>"Lancer de Dés"</strong><br>
+                        2. Lancez le d12 via le bot<br>
+                        3. Si vous atteignez le seuil requis, vous récupérez l'artefact !<br>
+                        4. En cas d'échec, vous devrez attendre le prochain tour pour retenter.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">📖</span>
+                <h2 class="card-title">Règles de Récupération</h2>
+            </div>
+            <div class="card-body">
+                <h3 style="margin: 1.5rem 0; color: var(--highlight-color);">🎯 Processus de Récupération</h3>
+                
+                <ol style="margin-left: 1.5rem; line-height: 2;">
+                    <li><strong>Localisation</strong> : Les artefacts sont cachés dans les Foyers Primaires de l'infection</li>
+                    <li><strong>Accès</strong> : Une unité doit être sur le territoire contenant l'artefact</li>
+                    <li><strong>Test</strong> : Lancez un d12 et comparez au seuil de l'artefact</li>
+                    <li><strong>Succès</strong> : Si le résultat est égal ou supérieur, vous récupérez l'artefact</li>
+                    <li><strong>Échec</strong> : En cas d'échec, attendez le prochain tour pour retenter</li>
+                </ol>
+
+                <h3 style="margin: 2rem 0 1rem; color: var(--highlight-color);">⚡ Modificateurs</h3>
+                <ul style="margin-left: 1.5rem; line-height: 2;">
+                    <li><strong>+1</strong> si vous avez la compétence "Archéologue"</li>
+                    <li><strong>+2</strong> si vous utilisez un équipement de détection</li>
+                    <li><strong>-1</strong> si le territoire est infesté (niveau 3+)</li>
+                    <li><strong>-2</strong> si vous avez déjà échoué ce tour</li>
+                </ul>
+
+                <div class="info-box" style="margin-top: 2rem;">
+                    <h3>💡 Conseil du Maître du Jeu</h3>
+                    <p>
+                        La récupération des artefacts est une course contre la montre. 
+                        Équilibrez exploration et défense, car les autres joueurs cherchent également ces trésors. 
+                        Une fois les quatre artefacts réunis, le Vaccin Suprême peut être créé et la partie gagnée !
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">🏆</span>
+                <h2 class="card-title">Victoire par les Artefacts</h2>
+            </div>
+            <div class="card-body">
+                <p>La victoire peut être obtenue en rassemblant les quatre artefacts du remède sur votre base principale.</p>
+
+                <div style="background: rgba(46, 213, 115, 0.1); border: 1px solid rgba(46, 213, 115, 0.3); border-radius: 10px; padding: 2rem; margin: 2rem 0; text-align: center;">
+                    <h3 style="color: #2ed573; font-size: 1.5rem; margin-bottom: 1rem;">🎉 Condition de Victoire</h3>
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem;">
+                        Possédez simultanément les 4 artefacts du remède sur votre base principale au début de votre tour.
+                    </p>
+                    <p style="font-style: italic; color: var(--text-muted);">
+                        "Quand les quatre fragments sont réunis, l'espoir renaît et l'humanité est sauvée."
+                    </p>
+                </div>
+
+                <h3 style="margin: 2rem 0 1rem; color: var(--highlight-color);">⚠️ Points Importants</h3>
+                <ul style="margin-left: 1.5rem; line-height: 2;">
+                    <li>Les artefacts doivent être physiquement présents sur le même territoire</li>
+                    <li>La vérification s'effectue au début de la Phase 2 de votre tour</li>
+                    <li>Les artefacts peuvent être volés par les autres joueurs</li>
+                    <li>La victoire est immédiate dès que la condition est remplie</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animation au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.artifact-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.2}s`;
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 * (index + 1));
+            });
+        });
+    </script>
+
+    <!-- Supabase Client -->
+    <script src="game/supabase-client.js"></script>
+</body>
+</html>

@@ -1,0 +1,573 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Z-Survival - FAQ & C
+    <!-- Security Headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; frame-ancestors 'none';">
+    
+    <!-- Anti-Caching for Security -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <!-- Security Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.min.js"></script>
+    
+    <!-- Security System -->
+    <script src="game/security-system.js"></script>
+    <script src="game/security-headers.js"></script>
+    <script src="game/security-testing.js"></script>
+as Limites</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Orbitron:wght@400;700&family=Roboto:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a1a2e;
+            --secondary-color: #16213e;
+            --accent-color: #0f3460;
+            --highlight-color: #e94560;
+            --text-color: #f1f1f1;
+            --text-muted: #a8a8a8;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --card-bg: rgba(26, 26, 46, 0.8);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #0f0c29;
+            background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--highlight-color), transparent);
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #e94560);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        /* Navigation */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--text-color);
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .back-link::before {
+            content: '←';
+            margin-right: 8px;
+            color: var(--highlight-color);
+        }
+
+        .content {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+        }
+
+        h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--highlight-color);
+            font-size: 2rem;
+            margin: 2rem 0 1rem 0;
+            padding-left: 15px;
+            border-left: 5px solid var(--highlight-color);
+        }
+
+        /* FAQ Accordion */
+        .faq-section {
+            margin: 30px 0;
+        }
+
+        .faq-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(233, 69, 96, 0.3);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .faq-item:hover {
+            border-color: var(--highlight-color);
+            transform: translateY(-2px);
+        }
+
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--highlight-color);
+            transition: all 0.3s;
+        }
+
+        .faq-question:hover {
+            background: rgba(233, 69, 96, 0.1);
+        }
+
+        .faq-icon {
+            font-size: 24px;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            padding: 0 20px;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding: 0 20px 20px 20px;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 10px;
+            border-left: 5px solid #3b82f6;
+        }
+
+        strong {
+            color: var(--highlight-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Retour au Menu</a>
+
+        <div class="header">
+            <h1>❓ FAQ - Questions Fréquentes</h1>
+            <p style="font-size: 18px; opacity: 0.9;">Trouvez les réponses à vos questions ou posez-en une nouvelle !
+            </p>
+        </div>
+
+        <div class="content">
+            <div class="info-box">
+                <p><strong>💡 Comment utiliser cette section :</strong></p>
+                <p>Cliquez sur une question pour afficher la réponse. Si vous ne trouvez pas votre réponse, utilisez le
+                    formulaire en bas de page pour poser votre question !</p>
+            </div>
+
+            <h2>🎮 Questions Générales</h2>
+            <div class="faq-section">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Combien de joueurs peuvent jouer à Z-SURVIVAL ?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Z-SURVIVAL se joue de <strong>2 à 6 joueurs</strong>. En mode solo, vous affrontez uniquement
+                            le Bot de Crise. En mode équipe, vous pouvez jouer en 2v2, 3v3, ou 2v2v2.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Quelle est la durée moyenne d'une partie ?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Une partie dure en moyenne <strong>90 à 120 minutes</strong>. Les parties à 2 joueurs sont
+                            généralement plus rapides (60-90 min), tandis que les parties à 6 joueurs peuvent durer
+                            jusqu'à 150 minutes.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>À partir de quel âge peut-on jouer ?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Le jeu est recommandé à partir de <strong>14 ans</strong> en raison de la complexité
+                            stratégique et de la gestion des ressources.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2>⚔️ Règles de Combat</h2>
+            <div class="faq-section">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Que se passe-t-il en cas d'égalité lors d'un combat ?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>En cas d'égalité, le <strong>défenseur gagne toujours</strong>. Cela signifie que l'attaquant
+                            doit obtenir un score STRICTEMENT supérieur pour remporter le combat.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Peut-on attaquer plusieurs territoires en un seul tour ?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Oui !</strong> Vous pouvez effectuer autant d'attaques que vous le souhaitez pendant
+                            la Phase d'Action, tant que vous avez des unités disponibles et des actions restantes.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Les Zombies peuvent-ils attaquer ma Base Principale ?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Non</strong>, les Zombies n'attaquent JAMAIS les Bases Principales. Ils ne peuvent
+                            conquérir que les Capitales et les Foyers Primaires.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2>💎 Artefacts & Héros</h2>
+            <div class="faq-section">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Peut-on changer de Héros en cours de partie ?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Non</strong>, le choix du Héros est définitif et se fait au début de la partie lors
+                            de la mise en place.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Que se passe-t-il si je perds ma Base avec des Artefacts dessus ?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Si votre Base est conquise, <strong>tous les Artefacts qu'elle contenait sont transférés au
+                                conquérant</strong>. C'est pourquoi il est crucial de bien défendre votre Base une fois
+                            que vous avez récupéré les Artefacts !</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Le Catalyseur d'Antidote protège-t-il contre les conquêtes ?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Non !</strong> Le Catalyseur rend votre Base immune aux <strong>Raids
+                                uniquement</strong> (vol de ressources). Les adversaires peuvent toujours tenter de
+                            conquérir votre Base via une attaque normale.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2>🧪 Recherche & Ressources</h2>
+            <div class="faq-section">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Peut-on dépasser le niveau 5 de Recherche ?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Non</strong>, le niveau 5 est le maximum. Une fois atteint, vous ne pouvez plus
+                            investir dans la Recherche.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Y a-t-il une limite au nombre de ressources que je peux stocker ?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Non</strong>, il n'y a aucune limite de stockage. Vous pouvez accumuler autant de
+                            Munitions, Nourriture et Matériaux que vous le souhaitez.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Peut-on échanger des ressources avec d'autres joueurs ?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>En mode <strong>solo ou PvP classique : NON</strong>. En mode <strong>Équipe (2v2/3v3) :
+                                OUI</strong>, les coéquipiers peuvent partager leurs ressources librement.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2>🤖 Bot de Crise</h2>
+            <div class="faq-section">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Le Bot de Crise attaque-t-il tous les joueurs équitablement ?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Non</strong>, le Bot cible en priorité les joueurs qui possèdent des Artefacts ou qui
+                            contrôlent le plus de territoires. Plus vous êtes puissant, plus vous êtes ciblé !</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Peut-on désactiver le Bot de Crise pour une partie PvP pure ?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Non recommandé</strong>, car le Bot est essentiel à l'équilibre du jeu. Cependant,
+                            vous pouvez créer une variante maison en retirant les Cartes Crise et en fixant l'Infection
+                            Mondiale à 0.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2>🎯 Stratégie</h2>
+            <div class="faq-section">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Quelle est la meilleure stratégie pour gagner ?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Il n'y a pas de stratégie unique ! Voici les 3 approches principales :</p>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li><strong>Expansion rapide :</strong> Conquérir rapidement les Foyers Primaires</li>
+                            <li><strong>Économie :</strong> Maximiser la production de ressources avant d'agir</li>
+                            <li><strong>Recherche intensive :</strong> Atteindre niveau 5 rapidement puis récupérer les
+                                Artefacts</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Dois-je récupérer les 3 Artefacts avant d'atteindre Recherche 5 ?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Pas nécessairement !</strong> Vous pouvez atteindre Recherche 5 en premier, mais vous
+                            devrez ensuite récupérer les 3 Artefacts. L'ordre dépend de votre stratégie et de la
+                            pression des adversaires.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2>📧 Posez Votre Question</h2>
+            <div class="warning-box">
+                <p><strong>⚠️ Vous ne trouvez pas votre réponse ?</strong></p>
+                <p>Utilisez le formulaire ci-dessous pour poser votre question. Nous vous répondrons dans les plus brefs
+                    délais !</p>
+            </div>
+
+            <div class="contact-form">
+                <h3 style="margin-bottom: 20px; font-size: 24px;">💬 Formulaire de Contact</h3>
+                <form id="questionForm" onsubmit="submitQuestion(event)">
+                    <div class="form-group">
+                        <label for="name">Votre Nom *</label>
+                        <input type="text" id="name" name="name" required placeholder="Ex: Jean Dupont">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Votre Email *</label>
+                        <input type="email" id="email" name="email" required placeholder="Ex: jean.dupont@email.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Sujet de la Question *</label>
+                        <input type="text" id="subject" name="subject" required
+                            placeholder="Ex: Question sur les règles de combat">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="question">Votre Question *</label>
+                        <textarea id="question" name="question" required
+                            placeholder="Posez votre question ici de manière détaillée..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">📤 Envoyer la Question</button>
+                </form>
+
+                <div id="confirmMessage">
+                    ✅ Votre question a été envoyée avec succès ! Nous vous répondrons par email dans les 48h.
+                </div>
+            </div>
+
+            <div class="info-box" style="margin-top: 40px;">
+                <p><strong>📬 Autres moyens de nous contacter :</strong></p>
+                <p>Email : <strong>contact@z-survival.com</strong></p>
+                <p>Réseaux sociaux : <strong>@ZSurvivalGame</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleFAQ(element) {
+            const faqItem = element.parentElement;
+            const wasActive = faqItem.classList.contains('active');
+
+            // Fermer tous les autres items
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Ouvrir l'item cliqué si il n'était pas déjà ouvert
+            if (!wasActive) {
+                faqItem.classList.add('active');
+            }
+        }
+
+        function submitQuestion(event) {
+            event.preventDefault();
+
+            // Récupérer les données du formulaire
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                question: document.getElementById('question').value
+            };
+
+            // Simuler l'envoi (à remplacer par votre backend)
+            console.log('Question envoyée:', formData);
+
+            // Afficher le message de confirmation
+            document.getElementById('confirmMessage').style.display = 'block';
+
+            // Réinitialiser le formulaire
+            document.getElementById('questionForm').reset();
+
+            // Masquer le message après 5 secondes
+            setTimeout(() => {
+                document.getElementById('confirmMessage').style.display = 'none';
+            }, 5000);
+
+            // TODO: Intégrer avec votre service d'email (EmailJS, Formspree, etc.)
+            // Exemple avec EmailJS:
+            // emailjs.send("service_id", "template_id", formData)
+            //     .then(() => { /* succès */ })
+            //     .catch(() => { /* erreur */ });
+        }
+    </script>
+
+    <!-- Supabase Client -->
+    <script src="game/supabase-client.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Z-SURVIVAL : PILLAGE & PANDÉMIE - Règlemen
+    <!-- Security Headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; frame-ancestors 'none';">
+    
+    <!-- Anti-Caching for Security -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <!-- Security Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.min.js"></script>
+    
+    <!-- Security System -->
+    <script src="game/security-system.js"></script>
+    <script src="game/security-headers.js"></script>
+    <script src="game/security-testing.js"></script>
+t Officiel</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        }
+        
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            page-break-after: always;
+            position: relative;
+        }
+        
+        .cover {
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 50%, #FF6347 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.1) 10px, rgba(0,0,0,0.1) 20px),
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            z-index: 1;
+        }
+        
+        .cover-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .game-title {
+            font-family: 'Cinzel', serif;
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+            letter-spacing: 3px;
+        }
+        
+        .game-subtitle {
+            font-family: 'Cinzel', serif;
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .cover-icon {
+            font-size: 120px;
+            margin: 40px 0;
+            text-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+        }
+        
+        .cover-footer {
+            margin-top: 60px;
+            font-size: 24px;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        
+        .content-page {
+            padding: 50px 60px;
+        }
+        
+        .page-header {
+            border-bottom: 4px solid #DC143C;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: #8B0000;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            font-family: 'Cinzel', serif;
+            color: #DC143C;
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-left: 15px;
+            border-left: 5px solid #DC143C;
+        }
+        
+        h3 {
+            font-family: 'Roboto', sans-serif;
+            color: #2c3e50;
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+        
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe6e6 100%);
+            border-left: 5px solid #DC143C;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-left: 5px solid #3b82f6;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border-left: 5px solid #f59e0b;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        
+        tr:hover {
+            background-color: #fff5f5;
+        }
+        
+        .section-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #DC143C 0%, #FF6347 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            margin-right: 15px;
+            font-weight: 700;
+            box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+        }
+        
+        .toc {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .toc-title {
+            font-family: 'Cinzel', serif;
+            font-size: 28px;
+            color: #8B0000;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .toc-item {
+            padding: 10px 15px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .toc-item:hover {
+            background: #fff5f5;
+            transform: translateX(5px);
+        }
+        
+        .page-number {
+            position: absolute;
+            bottom: 30px;
+            right: 60px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        strong {
+            color: #8B0000;
+            font-weight: 600;
+        }
+        
+        .emoji {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .page {
+                margin: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- PAGE DE COUVERTURE -->
+    <div class="page cover">
+        <div class="cover-content">
+            <div class="cover-icon">☣️</div>
+            <h1 class="game-title">Z-SURVIVAL</h1>
+            <h2 class="game-subtitle">PILLAGE & PANDÉMIE</h2>
+            <div style="height: 2px; width: 300px; background: white; margin: 30px auto; opacity: 0.7;"></div>
+            <p class="cover-footer">📜 RÈGLEMENT OFFICIEL ULTIME 📜</p>
+            <p style="margin-top: 80px; font-size: 18px; font-style: italic;">Version Définitive et Exhaustive</p>
+        </div>
+    </div>
+
+    <!-- TABLE DES MATIÈRES -->
+    <div class="page content-page">
+        <div class="page-header">
+            <h1>📋 Table des Matières</h1>
+        </div>
+        
+        <div class="toc">
+            <div class="toc-item">
+                <span><strong>1.</strong> ⚔️ But du Jeu et Factions</span>
+                <span>p. 3</span>
+            </div>
+            <div class="toc-item">
+                <span><strong>2.</strong> 🗃️ Composants et Matériel de Jeu</span>
+                <span>p. 3</span>
+            </div>
+            <div class="toc-item">
+                <span><strong>3.</strong> 🛡️ Les Unités et la Gestion des Ressources</span>
+                <span>p. 4</span>
+            </div>
+            <div class="toc-item">
+                <span><strong>4.</strong> 🧭 Mise en Place Détaillée</span>
+                <span>p. 4</span>
+            </div>
+            <div class="toc-item">
+                <span><strong>5.</strong> 🦸 Les Héros et les Artefacts</span>
+                <span>p. 5</span>
+            </div>
+            <div class="toc-item">
+                <span><strong>6.</strong> 🚶 Déroulement du Tour</span>
+                <span>p. 6</span>
+            </div>
+            <div class="toc-item">
+                <span><strong>7.</strong> 🤖 Le Bot de Crise</span>
+                <span>p. 8</span>
+            </div>
+            <div class="toc-item">
+                <span><strong>8.</strong> 🤝 Les Règles Avancées : Le Jeu en Équipe</span>
+                <span>p. 9</span>
+            </div>
+        </div>
+        
+        <div class="highlight-box" style="margin-top: 40px;">
+            <p style="text-align: center; font-size: 16px; margin: 0;">
+                <strong>⚠️ Note Importante :</strong> Ce règlement est la version définitive et exhaustive. 
+                Chaque règle, chaque interaction, chaque composant est détaillé dans une structure claire, 
+                afin qu'aucune ambiguïté ne subsiste.
+            </p>
+        </div>
+        
+        <div class="page-number">Page 2</div>
+    </div>
+
+    <!-- SECTION 1 : BUT DU JEU -->
+    <div class="page content-page">
+        <div class="page-header">
+            <h1><span class="section-number">1</span>⚔️ But du Jeu et Factions</h1>
+        </div>
+        
+        <h3>Titre du Jeu</h3>
+        <p><strong>Z-SURVIVAL : PILLAGE & PANDÉMIE</strong></p>
+        
+        <h3>But Principal</h3>
+        <p>La survie n'est qu'une étape ; la victoire exige la découverte et l'assemblage des <strong>Artefacts du Remède</strong>.</p>
+        
+        <div class="highlight-box">
+            <h3 style="margin-top: 0;">🏆 Victoire (Condition A)</h3>
+            <p>Le premier joueur ou la première équipe qui débute la <strong>Phase 2</strong> en ayant les <strong>trois Artefacts du Remède</strong> présents simultanément sur son territoire de <strong>Base Principale</strong> gagne la partie.</p>
+        </div>
+        
+        <div class="warning-box">
+            <h3 style="margin-top: 0;">💀 Défaite (Condition B)</h3>
+            <p>L'humanité est perdue si le marqueur d'<strong>Infection Mondiale</strong> atteint le niveau maximal (<strong>15</strong>) à la fin de n'importe quel tour.</p>
+        </div>
+
+        <!-- SECTION 2 : COMPOSANTS -->
+        <div class="page-header" style="margin-top: 40px;">
+            <h1><span class="section-number">2</span>🗃️ Composants et Matériel de Jeu</h1>
+        </div>
+        
+        <p>Chaque élément est essentiel au déroulement du jeu :</p>
+        
+        <ul>
+            <li><strong>Le Plateau de Jeu :</strong> Représentation du monde divisée en <strong>42 Territoires</strong> (30 Villes, 9 Capitales, 3 Zones Spéciales).</li>
+            <li><strong>Dés :</strong> 3 dés rouges (Attaque), 2 dés noirs (Défense), 1 dé à 12 faces (d12 pour le joueur).</li>
+            <li><strong>Le Bot de Crise (Système Externe) :</strong> Un générateur de nombres aléatoires pour simuler la volatilité de l'infection (produit un résultat entre 8 et 10).</li>
+        </ul>
+        
+        <h3>Les Jetons de Faction (Pions Joueurs)</h3>
+        <ul>
+            <li><strong>Survivants (Force 1) :</strong> Unité de base.</li>
+            <li><strong>Miliciens (Force 2) :</strong> Unité de combat forte.</li>
+            <li><strong>Héros (Force 3) :</strong> Pièce unique conférant une capacité spéciale (voir Section 5).</li>
+        </ul>
+        
+        <h3>Autres Composants</h3>
+        <ul>
+            <li><strong>Jetons Zombies :</strong> Représentent la menace neutre (PvE).</li>
+            <li><strong>Jetons Ressources :</strong> Munitions, Médicaments, Nourriture (servent de monnaie et de coût de survie).</li>
+            <li><strong>Pistes :</strong> Piste d'Infection Mondiale (1-15) et Pistes de Recherche (0-5).</li>
+        </ul>
+        
+        <div class="page-number">Page 3</div>
+    </div>
+
+    <!-- SECTION 3 : UNITÉS ET RESSOURCES -->
+    <div class="page content-page">
+        <div class="page-header">
+            <h1><span class="section-number">3</span>🛡️ Les Unités et la Gestion des Ressources</h1>
+        </div>
+        
+        <h2>A. Coûts de Recrutement (Phase 1)</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Unité</th>
+                    <th>Coût en Ressources</th>
+                    <th>Force de Combat</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Survivant</strong></td>
+                    <td>Gratuit (via renforts)</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td><strong>Milicien</strong></td>
+                    <td>2 Nourritures</td>
+                    <td>2</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h2>B. Gestion des Ressources et Fonction</h2>
+        
+        <div class="info-box">
+            <h3 style="margin-top: 0;">💣 Munitions</h3>
+            <p>Utilisées pour renforcer les défenses (Fortifications) et pour certaines Cartes Crise.</p>
+        </div>
+        
+        <div class="info-box">
+            <h3 style="margin-top: 0;">💊 Médicaments</h3>
+            <p>Utilisés pour avancer sur la Piste de Recherche (<strong>2 Médicaments = 1 niveau</strong>).</p>
+        </div>
+        
+        <div class="info-box">
+            <h3 style="margin-top: 0;">🍖 Nourriture</h3>
+            <p>Utilisée pour recruter les Miliciens et pour certaines Cartes Crise.</p>
+        </div>
+
+        <!-- SECTION 4 : MISE EN PLACE -->
+        <div class="page-header" style="margin-top: 40px;">
+            <h1><span class="section-number">4</span>🧭 Mise en Place Détaillée</h1>
+        </div>
+        
+        <p><strong>Procédure Initiale :</strong></p>
+        
+        <ol>
+            <li><strong>Distribution des Territoires :</strong> Chaque joueur tire des Cartes Territoire initiales. Placez <strong>2 Survivants</strong> sur chaque territoire contrôlé.</li>
+            <li><strong>Identification des Foyers :</strong> Déterminez les <strong>3 territoires non contrôlés</strong> ayant la plus forte concentration de Zombies. Ce sont les <strong>Foyers Primaires</strong>.</li>
+            <li><strong>Déploiement des Artefacts :</strong> Placez un <strong>Artefact du Remède</strong> différent dans chacun des 3 Foyers Primaires.</li>
+            <li><strong>Base et Héros :</strong> Chaque joueur choisit l'une de ses zones comme <strong>Base Principale</strong> et y place son <strong>Héros</strong>.</li>
+            <li><strong>Ressources de Départ :</strong> Chaque joueur reçoit <strong>5 Munitions, 3 Médicaments, 3 Nourritures</strong>.</li>
+            <li><strong>Pistes :</strong> Le marqueur d'<strong>Infection Mondiale</strong> est placé sur <strong>1</strong>. Les <strong>Pistes de Recherche</strong> des joueurs sont à <strong>0</strong>.</li>
+            <li><strong>Cartes :</strong> Mélangez les <strong>Cartes Crise</strong> et placez-les face cachée.</li>
+        </ol>
+        
+        <div class="page-number">Page 4</div>
+    </div>
+
+    <!-- SECTION 5 : HÉROS ET ARTEFACTS -->
+    <div class="page content-page">
+        <div class="page-header">
+            <h1><span class="section-number">5</span>🦸 Les Héros et les Artefacts</h1>
+        </div>
+        
+        <h2>A. Les Héros (Capacités Permanentes)</h2>
+        
+        <div class="highlight-box">
+            <p><strong>Règle Fondamentale :</strong> Le Héros ne peut pas être éliminé tant qu'une autre unité de la faction est présente sur le territoire.</p>
+        </div>
+        
+        <p>Chaque Héros possède une capacité spéciale unique :</p>
+        
+        <ul>
+            <li><strong>Le Stratège :</strong> Permet de relancer un dé d'attaque par tour.</li>
+            <li><strong>L'Ingénieur :</strong> Réduit le coût des fortifications de 1 Munition.</li>
+            <li><strong>Le Guérisseur :</strong> Ajoute +1 au jet de d12 lors des Tests de Crise.</li>
+            <li><strong>Le Commandeur :</strong> Augmente la force de combat de toutes les unités sur son territoire de +1.</li>
+        </ul>
+        
+        <h2>B. Les Artefacts du Remède (Règles de Transport)</h2>
+        
+        <div class="info-box">
+            <p><strong>Possession :</strong> Un Artefact est considéré comme possédé s'il se trouve sur un territoire contrôlé par la faction. Il doit être physiquement transporté.</p>
+        </div>
+        
+        <h3>🧪 L'Échantillon Viral Muté</h3>
+        <p>Si possédé, permet de <strong>relancer un dé</strong> (Attaque ou Défense) lors d'un combat contre les Zombies (Conquête).</p>
+        
+        <h3>📋 Le Schéma de Synthèse</h3>
+        <p>Si possédé, toute augmentation de l'<strong>Infection Mondiale</strong> due à une défaite (PvE ou PvP) est <strong>annulée</strong>.</p>
+        
+        <h3>⚗️ Le Catalyseur d'Antidote</h3>
+        <p>S'il est stocké dans la <strong>Base Principale</strong>, cette dernière est <strong>immunisée</strong> contre toute tentative de <strong>Raid</strong> (vol) par les autres joueurs.</p>
+        
+        <div class="warning-box" style="margin-top: 30px;">
+            <p style="margin: 0;"><strong>⚠️ Important :</strong> Les Artefacts doivent être transportés physiquement d'un territoire à l'autre. Ils ne peuvent pas être téléportés ou échangés à distance (sauf en mode Équipe, voir Section 8).</p>
+        </div>
+        
+        <div class="page-number">Page 5</div>
+    </div>
+
+    <!-- SECTION 6 : DÉROULEMENT DU TOUR -->
+    <div class="page content-page">
+        <div class="page-header">
+            <h1><span class="section-number">6</span>🚶 Déroulement du Tour</h1>
+        </div>
+        
+        <p>Chaque joueur complète les trois phases dans l'ordre.</p>
+        
+        <h2>PHASE 1 : Recrutement, Ressources et Progrès</h2>
+        
+        <ol>
+            <li><strong>Calcul des Renforts :</strong> Recevez <strong>(Territoires Contrôlés / 3) + Bonus de Capitales + Bonus de Recherche</strong>. Ces renforts sont des <strong>Survivants</strong> par défaut.</li>
+            <li><strong>Recrutement Milicien (Optionnel) :</strong> Si vous avez des Miliciens, dépensez <strong>2 Nourritures</strong> pour les recruter au lieu de deux Survivants.</li>
+            <li><strong>Avancement de la Recherche (Optionnel) :</strong> Dépensez <strong>2 Médicaments</strong> pour avancer d'un niveau sur la Piste de Recherche.</li>
+        </ol>
+        
+        <h2>PHASE 2 : Actions et Combat (Conquête vs Raid)</h2>
+        
+        <p>Le joueur peut effectuer un nombre illimité de mouvements et d'attaques tant qu'il respecte les règles.</p>
+        
+        <h3>A. La Conquête (PvE contre Zombies)</h3>
+        
+        <div class="info-box">
+            <p><strong>Objectif :</strong> Reprendre des territoires infestés par les Zombies.</p>
+        </div>
+        
+        <ol>
+            <li><strong>Déclaration :</strong> Annoncez l'attaque sur un territoire infesté adjacent.</li>
+            <li><strong>Combat aux Dés :</strong> L'attaquant lance jusqu'à <strong>3 dés rouges</strong>, les Zombies défendent avec <strong>1 ou 2 dés noirs</strong> (selon leur nombre).</li>
+            <li><strong>Prise de Territoire :</strong> Si les Zombies sont éliminés, le joueur effectue le <strong>Test de Crise (Obligatoire)</strong>.</li>
+        </ol>
+        
+        <p><strong>Conséquence :</strong></p>
+        <ul>
+            <li><strong>✅ Succès au Test de Crise :</strong> Le joueur prend le territoire et diminue l'<strong>Infection Mondiale de 1</strong>. Si c'est un Foyer Primaire, il prend l'<strong>Artefact</strong>.</li>
+            <li><strong>❌ Échec au Test de Crise :</strong> Perte de <strong>2 unités supplémentaires</strong>. <strong>Infection Mondiale +2</strong>. L'attaque s'arrête.</li>
+        </ul>
+        
+        <h3>B. Le Raid (PvP contre Joueurs)</h3>
+        
+        <div class="warning-box">
+            <p><strong>Attention :</strong> Les Raids sont des actions agressives qui peuvent déclencher des conséquences graves.</p>
+        </div>
+        
+        <ol>
+            <li><strong>Déclaration :</strong> Annoncez l'attaque sur un territoire adjacent. Si la cible est la <strong>Base Principale</strong>, vérifiez la présence du <strong>Catalyseur d'Antidote</strong> (s'il est présent, le Raid est impossible).</li>
+            <li><strong>Combat aux Dés :</strong> Les joueurs lancent les dés (max <strong>3 Attaque / max 2 Défense</strong>).</li>
+        </ol>
+        
+        <div class="page-number">Page 6</div>
+    </div>
+
+    <!-- SECTION 6 SUITE -->
+    <div class="page content-page">
+        <div class="page-header">
+            <h1><span class="section-number">6</span>🚶 Déroulement du Tour (suite)</h1>
+        </div>
+        
+        <p><strong>Résultat du Raid :</strong></p>
+        <ul>
+            <li><strong>Attaquant Gagne le territoire :</strong> Il vole <strong>UN Artefact</strong> ou <strong>3 Ressources</strong> au choix.</li>
+            <li><strong>Défenseur Gagne le combat :</strong> L'Attaquant doit immédiatement subir un <strong>Test de Crise</strong> (Bot 8-10) en raison de l'agitation.</li>
+        </ul>
+        
+        <p><strong>Conséquence du Test de Crise (pour l'Attaquant vaincu) :</strong></p>
+        <ul>
+            <li><strong>Échec :</strong> <strong>Infection Mondiale +1</strong> et perte de <strong>2 unités supplémentaires</strong>.</li>
+        </ul>
+        
+        <h2>PHASE 3 : Phase Zombie et Crise (Le Risque Systémique)</h2>
+        
+        <h3>1. La Horde (Propagation)</h3>
+        <p>Sur tous les territoires non contrôlés adjacents à un territoire infesté, ajoutez <strong>1 Jeton Zombie</strong>.</p>
+        
+        <h3>2. L'Assaut Zombie (Défi du Bot)</h3>
+        <p>Tous les territoires infestés attaquent les territoires humains adjacents. Le <strong>Bot de Crise</strong> génère le <strong>Seuil de Défense (8 à 10)</strong> que les défenseurs doivent surpasser avec leurs jets de dés.</p>
+        
+        <div class="highlight-box">
+            <h3 style="margin-top: 0;">Procédure de l'Assaut Zombie</h3>
+            <ol>
+                <li>Le Bot génère un nombre entre 8 et 10.</li>
+                <li>Le défenseur lance ses dés de défense (max 2 dés noirs).</li>
+                <li>Si le total des dés du défenseur est <strong>inférieur ou égal</strong> au nombre du Bot, le territoire perd <strong>1 unité</strong>.</li>
+                <li>Si le territoire est vidé de toutes ses unités, il devient infesté et <strong>Infection Mondiale +1</strong>.</li>
+            </ol>
+        </div>
+        
+        <h3>3. La Crise (Le Choix Crucial)</h3>
+        <p>Le joueur actif pioche une <strong>Carte Crise</strong> et doit choisir immédiatement entre les deux options :</p>
+        
+        <ul>
+            <li><strong>Sacrifice :</strong> Payer un coût immédiat (ressources, unités) pour éviter un Test de Crise.</li>
+            <li><strong>Challenge :</strong> Tenter un Test de Crise avec le Bot. En cas de succès, obtenir un bonus. En cas d'échec, subir une pénalité.</li>
+        </ul>
+        
+        <div class="info-box">
+            <p><strong>💡 Conseil Stratégique :</strong> Évaluez toujours votre position avant de choisir. Un Sacrifice peut être préférable si votre niveau de Recherche est faible ou si vous n'avez pas d'Artefacts pour vous aider.</p>
+        </div>
+        
+        <div class="page-number">Page 7</div>
+    </div>
+
+    <!-- SECTION 7 : BOT DE CRISE -->
+    <div class="page content-page">
+        <div class="page-header">
+            <h1><span class="section-number">7</span>🤖 Le Bot de Crise : Procédure de Défi</h1>
+        </div>
+        
+        <p>Le Bot de Crise intervient obligatoirement dans trois scénarios :</p>
+        <ul>
+            <li><strong>Conquête</strong> (après avoir éliminé les Zombies)</li>
+            <li><strong>Raid perdu</strong> (l'attaquant a échoué)</li>
+            <li><strong>Crise</strong> (option Challenge de la Carte Crise)</li>
+        </ul>
+        
+        <h2>Procédure Complète du Test de Crise</h2>
+        
+        <div class="highlight-box">
+            <ol>
+                <li><strong>Lancement du Bot :</strong> Le Bot génère un nombre aléatoire entre <strong>8 et 10</strong>.</li>
+                <li><strong>Jet du Joueur :</strong> Le joueur lance son <strong>d12</strong>.</li>
+                <li><strong>Application des Bonus :</strong> Le joueur ajoute les bonus suivants :
+                    <ul>
+                        <li><strong>Recherche Niveau 5 :</strong> +1</li>
+                        <li><strong>Artefact :</strong> +X (si applicable, ex : Le Guérisseur donne +1)</li>
+                        <li><strong>Malus :</strong> Si la Carte Crise l'impose (ex : -2)</li>
+                    </ul>
+                </li>
+                <li><strong>Comparaison :</strong> Si le <strong>Total du Joueur</strong> est <strong>strictement supérieur</strong> au nombre du Bot, le Test est réussi. Sinon, il échoue et la conséquence s'applique.</li>
+            </ol>
+        </div>
+        
+        <h2>Exemple de Test de Crise</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Élément</th>
+                    <th>Valeur</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Bot de Crise</td>
+                    <td>9</td>
+                </tr>
+                <tr>
+                    <td>Jet du d12 du Joueur</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td>Bonus Recherche Niveau 5</td>
+                    <td>+1</td>
+                </tr>
+                <tr>
+                    <td>Bonus Héros (Le Guérisseur)</td>
+                    <td>+1</td>
+                </tr>
+                <tr>
+                    <td>Malus Carte Crise</td>
+                    <td>-2</td>
+                </tr>
+                <tr>
+                    <td><strong>Total du Joueur</strong></td>
+                    <td><strong>7 + 1 + 1 - 2 = 7</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Résultat</strong></td>
+                    <td><strong>Échec (7 ≤ 9)</strong></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="warning-box">
+            <p><strong>⚠️ Rappel Important :</strong> Le joueur doit obtenir un résultat <strong>strictement supérieur</strong> au Bot pour réussir. L'égalité est considérée comme un échec.</p>
+        </div>
+        
+        <div class="page-number">Page 8</div>
+    </div>
+
+    <!-- SECTION 8 : JEU EN ÉQUIPE -->
+    <div class="page content-page">
+        <div class="page-header">
+            <h1><span class="section-number">8</span>🤝 Les Règles Avancées : Le Jeu en Équipe</h1>
+        </div>
+        
+        <p>Pour jouer en <strong>2 contre 2</strong> ou <strong>3 contre 3</strong>, les règles suivantes s'appliquent :</p>
+        
+        <h2>Modifications des Règles en Mode Équipe</h2>
+        
+        <h3>1. Partage des Ressources</h3>
+        <div class="info-box">
+            <p>Les joueurs d'une même équipe partagent un <strong>pot commun de Ressources</strong>. Chaque membre peut utiliser les ressources de l'équipe librement.</p>
+        </div>
+        
+        <h3>2. Base d'Équipe</h3>
+        <div class="info-box">
+            <p>Les équipiers doivent désigner une seule <strong>Base Principale commune</strong>. C'est dans cette Base que les trois Artefacts doivent être réunis pour remporter la victoire.</p>
+        </div>
+        
+        <h3>3. Échange d'Artefacts</h3>
+        <div class="info-box">
+            <p>Un joueur peut échanger un Artefact avec un équipier sur un territoire adjacent.</p>
+            <p><strong>Coût :</strong> 1 unité de mouvement.</p>
+        </div>
+        
+        <h3>4. Victoire d'Équipe</h3>
+        <div class="highlight-box">
+            <p>L'équipe gagne lorsque les <strong>3 Artefacts</strong> sont réunis à la <strong>Base Principale de l'équipe</strong> au début de la Phase 2 de n'importe quel membre de l'équipe.</p>
+        </div>
+        
+        <h2>Stratégies Recommandées en Équipe</h2>
+        
+        <ul>
+            <li><strong>Spécialisation des Rôles :</strong> Un joueur peut se concentrer sur la Recherche pendant que l'autre collecte les Artefacts.</li>
+            <li><strong>Coordination des Attaques :</strong> Planifiez vos Raids et Conquêtes pour maximiser l'efficacité.</li>
+            <li><strong>Protection de la Base :</strong> Assurez-vous qu'au moins un joueur garde la Base Principale avec le Catalyseur d'Antidote.</li>
+            <li><strong>Communication :</strong> La clé du succès en équipe est la communication constante sur les ressources, les positions et les objectifs.</li>
+        </ul>
+        
+        <div class="warning-box">
+            <p><strong>⚠️ Attention :</strong> Si la Base Principale de l'équipe tombe, tous les Artefacts qui s'y trouvent peuvent être volés par l'équipe adverse. Protégez-la à tout prix !</p>
+        </div>
+        
+        <div class="page-number">Page 9</div>
+    </div>
+
+    <!-- PAGE DE FIN -->
+    <div class="page cover">
+        <div class="cover-content">
+            <div class="cover-icon">🎲</div>
+            <h1 class="game-title" style="font-size: 48px;">Bonne Chance, Survivants !</h1>
+            <div style="height: 2px; width: 300px; background: white; margin: 30px auto; opacity: 0.7;"></div>
+            <p style="font-size: 20px; max-width: 600px; margin: 30px auto; line-height: 1.8;">
+                Dans ce monde ravagé par l'infection, seuls les plus stratégiques, 
+                les plus courageux et les plus chanceux survivront. 
+                Rassemblez les Artefacts, repoussez la Horde, 
+                et sauvez l'humanité de l'extinction.
+            </p>
+            <div style="margin-top: 80px; font-size: 18px; opacity: 0.9;">
+                <p>☣️ La survie n'est que le début ☣️</p>
+                <p style="margin-top: 20px;">Version 1.0 - Règlement Officiel Complet</p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Supabase Client -->
+    <script src="game/supabase-client.js"></script>
+</body>
+</html>
