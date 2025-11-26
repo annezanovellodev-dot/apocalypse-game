@@ -1226,122 +1226,20 @@
 </script>
 
 <!-- Multi-joueurs Local -->
-<script src="supabase-client.js"></script>
+<script src="local-multiplayer.js"></script>
 <script>
-    // Multi-joueurs local - Test automatique
-    document.addEventListener('DOMContentLoaded', async () => {
-        console.log('🎮 Initialisation multi-joueurs local...');
+    // Exemple d'utilisation :
+    document.addEventListener('DOMContentLoaded', () => {
+        // Exemple : Créer une partie
+        // const game = MultiplayerSystem.createGame("MonPseudo", "MaPartie");
         
-        try {
-            // Test connexion
-            const success = await SupabaseClient.initSupabase();
-            console.log('✅ Multi-joueurs initialisé:', success ? 'Succès' : 'Échec');
-            
-            // Test login admin
-            const result = await SupabaseClient.loginAdmin();
-            console.log('✅ Login admin:', result ? 'Succès' : 'Échec');
-            
-            // Afficher le statut dans la page
-            const statusDiv = document.createElement('div');
-            statusDiv.style.position = 'fixed';
-            statusDiv.style.top = '10px';
-            statusDiv.style.left = '10px';
-            statusDiv.style.background = 'rgba(0, 255, 0, 0.1)';
-            statusDiv.style.border = '1px solid rgba(0, 255, 0, 0.3)';
-            statusDiv.style.color = '#0f0';
-            statusDiv.style.padding = '10px';
-            statusDiv.style.borderRadius = '5px';
-            statusDiv.style.fontFamily = 'monospace';
-            statusDiv.style.fontSize = '12px';
-            statusDiv.style.zIndex = '9999';
-            statusDiv.innerHTML = 
-                '<div>🎮 Multi-joueurs: ' + (success ? 'Connecté' : 'Erreur') + '</div>' +
-                '<div>👤 Admin: ' + (result ? 'Connecté' : 'Erreur') + '</div>' +
-                '<div>📱 Ready: ' + (success && result ? 'OUI' : 'NON') + '</div>';
-            document.body.appendChild(statusDiv);
-            
-            // Fonctions multi-joueurs
-            window.MultiplayerFunctions = {
-                createGame: (hostName, playerName) => {
-                    console.log('🎮 Création partie locale...');
-                    const game = FirebaseMultiplayer.createGame(hostName);
-                    
-                    if (game.success) {
-                        // Affiche le code
-                        const codeDiv = document.createElement('div');
-                        codeDiv.id = 'gameCodeDisplay';
-                        codeDiv.style.cssText = `
-                            position: fixed; top: 60px; right: 10px; 
-                            background: rgba(0,255,0,0.2); border: 2px solid #0f0; 
-                            color: #0f0; padding: 15px; border-radius: 10px; 
-                            font-family: monospace; font-weight: bold; z-index: 9999;
-                        `;
-                        codeDiv.innerHTML = `
-                            🎮 PARTIE CRÉÉE<br>
-                            📋 Code: <span style="font-size: 18px;">${game.gameCode}</span><br>
-                            📱 Partage ce code aux joueurs<br>
-                            <button onclick="this.parentElement.remove()" style="margin-top: 10px; background: #0f0; color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">✓ OK</button>
-                        `;
-                        document.body.appendChild(codeDiv);
-                    } else {
-                        alert('❌ Erreur création partie: ' + game.error);
-                    }
-                    
-                    return game;
-                },
-                
-                joinGame: (gameCode, playerName) => {
-                    console.log('📱 Rejoindre partie locale:', gameCode);
-                    const result = FirebaseMultiplayer.joinGame(gameCode, playerName);
-                    
-                    if (result.success) {
-                        // Affiche la confirmation
-                        const joinDiv = document.createElement('div');
-                        joinDiv.id = 'gameJoinDisplay';
-                        joinDiv.style.cssText = `
-                            position: fixed; top: 60px; right: 10px; 
-                            background: rgba(0,150,255,0.2); border: 2px solid #00f; 
-                            color: #00f; padding: 15px; border-radius: 10px; 
-                            font-family: monospace; font-weight: bold; z-index: 9999;
-                        `;
-                        joinDiv.innerHTML = `
-                            ✅ CONNECTÉ<br>
-                            🎮 Partie: ${gameCode}<br>
-                            📱 Joueur: ${playerName}<br>
-                            <button onclick="this.parentElement.remove()" style="margin-top: 10px; background: #00f; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">✓ OK</button>
-                        `;
-                        document.body.appendChild(joinDiv);
-                    } else {
-                        alert('❌ Erreur rejoindre partie: ' + result.error);
-                    }
-                    
-                    return result;
-                },
-                
-                startGame: () => {
-                    console.log('🚀 Démarrage partie locale...');
-                    const startDiv = document.createElement('div');
-                    startDiv.style.cssText = `
-                        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-                        background: rgba(255,0,255,0.2); border: 2px solid #f0f; 
-                        color: #f0f; padding: 20px; border-radius: 15px; 
-                        font-family: monospace; font-weight: bold; z-index: 10000;
-                        text-align: center;
-                    `;
-                    startDiv.innerHTML = `
-                        🚀 PARTIE DÉMARRÉE<br>
-                        🎮 Le jeu commence maintenant !<br>
-                        <button onclick="this.parentElement.remove()" style="margin-top: 15px; background: #f0f; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">✓ COMMENCER</button>
-                    `;
-                    document.body.appendChild(startDiv);
-                }
-            };
-            
-            console.log('🎮 Multi-joueurs local prêt !');
-            
-        } catch (error) {
-            console.error('❌ Erreur initialisation:', error);
-        }
+        // Exemple : Rejoindre une partie
+        // MultiplayerSystem.joinGame("CODE123", "MonPseudo");
+        
+        // Exemple : Démarrer la partie (seulement l'hôte)
+        // MultiplayerSystem.startGame("CODE123");
+        
+        console.log('🎮 Système multi-joueurs prêt !');
     });
 </script>
     <!-- Interface Multi-joueurs -->
