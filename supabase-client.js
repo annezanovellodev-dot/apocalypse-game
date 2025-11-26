@@ -1,97 +1,172 @@
 /**
- * MULTI-JOUEURS LOCAL POUR Z-SURVIVAL
- * WebSocket sans Supabase
+ * CLIENT FIREBASE POUR Z-SURVIVAL
+ * Multi-joueurs real-time avec Firestore
  */
 
-// Configuration WebSocket local
-const WS_CONFIG = {
-    url: window.location.protocol === 'https:' 
-        ? `wss://${window.location.host}` 
-        : `ws://${window.location.host}`,
-    // Pour le test local, utilise un port fixe
-    localUrl: 'ws://localhost:8080'
+// Configuration Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyAMoFMnlxVjaa1F4CIvNIO2MicCrU0Y90U",
+    authDomain: "z-survival-game-74cfa.firebaseapp.com",
+    projectId: "z-survival-game-74cfa",
+    storageBucket: "z-survival-game-74cfa.firebasestorage.app",
+    messagingSenderId: "109918357924",
+    appId: "1:109918357924:web:d35ac007d952f383c55931"
 };
 
-// WebSocket Client
-class LocalMultiplayer {
+// Import Firebase SDK (CDN)
+const script = document.createElement('script');
+script.src = 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js';
+document.head.appendChild(script);
+
+script.onload = () => {
+    // Import Firestore
+    const firestoreScript = document.createElement('script');
+    firestoreScript.src = 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js';
+    document.head.appendChild(firestoreScript);
+    
+    firestoreScript.onload = () => {
+        initializeFirebase();
+    };
+};
+
+// Variables globales
+let app = null;
+let db = null;
+let auth = null;
+
+// Initialisation Firebase
+function initializeFirebase() {
+    try {
+        app = firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+        auth = firebase.auth();
+        
+        console.log('🔥 Firebase initialisé avec succès !');
+        
+        // Configure Firestore pour la performance
+        db.settings({
+            cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED
+        });
+        
+    } catch (error) {
+        console.error('❌ Erreur initialisation Firebase:', error);
+    }
+}
+
+// Classe Multi-joueurs Firebase
+class FirebaseMultiplayer {
     constructor() {
-        this.ws = null;
         this.gameId = null;
         this.playerId = null;
         this.isHost = false;
-        this.players = new Map();
-        this.callbacks = {};
+        this.gameCode = null;
+        this.listeners = [];
     }
 
-    // Connexion au serveur WebSocket
-    connect() {
+    // Initialiser la connexion
+    async init() {
+        if (!db) {
+            console.error('❌ Firebase non initialisé');
+            return false;
+        }
+        
+        console.log('🔥 Connexion Firebase en cours...');
+        
+        // Test de connexion
         try {
-            // Pour le déploiement Vercel, on simule une connexion
-            console.log('🔗 Connexion multi-joueurs locale...');
-            this.simulateConnection();
+            await db.collection('test').doc('connection').set({
+                connected: true,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            console.log('✅ Firebase connecté !');
             return true;
         } catch (error) {
-            console.error('❌ Erreur connexion WebSocket:', error);
+            console.error('❌ Erreur connexion Firebase:', error);
             return false;
         }
     }
 
-    // Simulation de connexion (pour Vercel)
-    simulateConnection() {
-        setTimeout(() => {
-            this.trigger('connected', { status: 'connected' });
-            console.log('✅ Multi-joueurs connecté (mode local)');
-        }, 1000);
-    }
-
     // Créer une partie
-    createGame(hostName) {
-        this.gameId = 'GAME-' + Date.now();
-        this.playerId = 'HOST-' + Date.now();
-        this.isHost = true;
-        
-        const gameData = {
-            id: this.gameId,
-            game_code: this.generateGameCode(),
-            host_name: hostName,
-            status: 'waiting',
-            created_at: new Date().toISOString()
-        };
+    async createGame(hostName, playerName) {
+        try {
+            const gameCode = this.generateGameCode();
+            
+            const gameRef = await db.collection('games').add({
+                gameCode: gameCode,
+                hostName: hostName,
+                hostPlayerName: playerName,
+                status: 'waiting',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                players: []
+            });
 
-        // Simule la création
-        setTimeout(() => {
-            this.trigger('gameCreated', gameData);
-            console.log('🎮 Partie créée:', gameData.game_code);
-        }, 500);
+            this.gameId = gameRef.id;
+            this.gameCode = gameCode;
+            this.isHost = true;
+            this.playerId = 'host-' + Date.now();
 
-        return gameData;
+            console.log('🎮 Partie créée:', gameCode);
+            
+            return {
+                id: gameRef.id,
+                gameCode: gameCode,
+                hostName: hostName,
+                status: 'waiting'
+            };
+
+        } catch (error) {
+            console.error('❌ Erreur création partie:', error);
+            return { error: error.message };
+        }
     }
 
     // Rejoindre une partie
-    joinGame(gameCode, playerName) {
-        this.gameId = 'GAME-' + Date.now();
-        this.playerId = 'PLAYER-' + Date.now();
-        this.isHost = false;
+    async joinGame(gameCode, playerName) {
+        try {
+            const gamesQuery = await db.collection('games')
+                .where('gameCode', '==', gameCode)
+                .where('status', '==', 'waiting')
+                .limit(1)
+                .get();
 
-        const gameData = {
-            id: this.gameId,
-            game_code: gameCode,
-            status: 'active'
-        };
+            if (gamesQuery.empty) {
+                return { error: 'Partie non trouvée ou déjà commencée' };
+            }
 
-        const playerData = {
-            id: this.playerId,
-            player_name: playerName,
-            device_type: 'mobile'
-        };
+            const gameDoc = gamesQuery.docs[0];
+            const gameData = gameDoc.data();
 
-        // Simule le rejoindre
-        setTimeout(() => {
-            this.trigger('gameJoined', { game: gameData, player: playerData });
+            // Ajouter le joueur
+            const playerData = {
+                id: 'player-' + Date.now(),
+                name: playerName,
+                joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                deviceType: 'mobile'
+            };
+
+            await gameDoc.ref.update({
+                players: firebase.firestore.FieldValue.arrayUnion(playerData),
+                status: 'active'
+            });
+
+            this.gameId = gameDoc.id;
+            this.gameCode = gameCode;
+            this.isHost = false;
+            this.playerId = playerData.id;
+
             console.log('📱 Rejoint la partie:', gameCode);
-        }, 500);
+            
+            return {
+                success: true,
+                game: { id: gameDoc.id, ...gameData },
+                player: playerData
+            };
 
-        return { success: true, game: gameData, player: playerData };
+        } catch (error) {
+            console.error('❌ Erreur rejoindre partie:', error);
+            return { error: error.message };
+        }
     }
 
     // Générer un code de partie
@@ -104,86 +179,119 @@ class LocalMultiplayer {
         return code;
     }
 
-    // Envoyer un message
-    sendMessage(type, data) {
-        console.log('📤 Message:', type, data);
-        // Simule l'envoi
-        setTimeout(() => {
-            this.trigger('message', { type, data, from: this.playerId });
-        }, 100);
+    // Envoyer un message dans le jeu
+    async sendMessage(type, data) {
+        if (!this.gameId || !db) return false;
+
+        try {
+            await db.collection('games').doc(this.gameId).collection('messages').add({
+                type: type,
+                data: data,
+                from: this.playerId,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            console.log('📤 Message envoyé:', type);
+            return true;
+        } catch (error) {
+            console.error('❌ Erreur envoi message:', error);
+            return false;
+        }
     }
 
-    // Écouter les événements
-    on(event, callback) {
-        if (!this.callbacks[event]) {
-            this.callbacks[event] = [];
-        }
-        this.callbacks[event].push(callback);
-    }
+    // Écouter les messages
+    listenToMessages(callback) {
+        if (!this.gameId || !db) return;
 
-    // Déclencher un événement
-    trigger(event, data) {
-        if (this.callbacks[event]) {
-            this.callbacks[event].forEach(callback => callback(data));
-        }
+        const unsubscribe = db.collection('games').doc(this.gameId)
+            .collection('messages')
+            .orderBy('timestamp')
+            .onSnapshot((snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === 'added') {
+                        callback(change.doc.data());
+                    }
+                });
+            });
+
+        this.listeners.push(unsubscribe);
     }
 
     // Déconnexion
     disconnect() {
-        console.log('🔌 Déconnexion multi-joueurs');
-        this.trigger('disconnected', { status: 'disconnected' });
+        this.listeners.forEach(unsubscribe => unsubscribe());
+        this.listeners = [];
+        console.log('🔌 Firebase déconnecté');
     }
 }
 
 // Instance globale
-let multiplayer = null;
+let firebaseMultiplayer = null;
 
-// Initialisation
+// Fonctions d'initialisation (compatibilité avec ancien code)
 async function initSupabase() {
-    console.log('🚀 Initialisation multi-joueurs local...');
-    multiplayer = new LocalMultiplayer();
-    const connected = multiplayer.connect();
+    if (!db) {
+        console.log('⏳ Firebase en cours d\'initialisation...');
+        return false;
+    }
+    
+    firebaseMultiplayer = new FirebaseMultiplayer();
+    const connected = await firebaseMultiplayer.init();
+    
+    if (connected) {
+        console.log('🔥 Multi-joueurs Firebase prêt !');
+    }
+    
     return connected;
 }
 
-// Login admin (local)
+// Login admin (simplifié pour Firebase)
 async function loginAdmin() {
-    console.log('👤 Admin connecté (mode local)');
+    console.log('👤 Admin connecté (mode Firebase)');
     return { 
         user: { 
             email: 'admin@zsurvival.com',
             role: 'admin'
         }, 
-        local: true 
+        firebase: true 
     };
 }
 
-// Créer un utilisateur mobile
+// Créer utilisateur mobile
 async function createMobileUser(deviceInfo) {
-    console.log('📱 Utilisateur mobile créé (mode local)');
+    console.log('📱 Utilisateur mobile créé (Firebase)');
     return { 
-        id: 'MOBILE-' + Date.now(),
-        device_id: deviceInfo.device_id || 'local-mobile',
-        device_name: deviceInfo.device_name || 'Mobile Device',
+        id: 'mobile-' + Date.now(),
+        device_id: deviceInfo.device_id || 'firebase-mobile',
+        device_name: deviceInfo.device_name || 'Mobile Firebase',
         status: 'authorized'
     };
 }
 
-// Exporter les fonctions et l'instance
+// Exporter les fonctions
 window.SupabaseClient = {
     initSupabase,
     loginAdmin,
     createMobileUser
 };
 
-window.Multiplayer = {
-    getInstance: () => multiplayer || new LocalMultiplayer(),
-    createGame: (hostName) => {
-        if (!multiplayer) multiplayer = new LocalMultiplayer();
-        return multiplayer.createGame(hostName);
+window.FirebaseMultiplayer = {
+    getInstance: () => firebaseMultiplayer || new FirebaseMultiplayer(),
+    createGame: (hostName, playerName) => {
+        if (!firebaseMultiplayer) firebaseMultiplayer = new FirebaseMultiplayer();
+        return firebaseMultiplayer.createGame(hostName, playerName);
     },
     joinGame: (gameCode, playerName) => {
-        if (!multiplayer) multiplayer = new LocalMultiplayer();
-        return multiplayer.joinGame(gameCode, playerName);
+        if (!firebaseMultiplayer) firebaseMultiplayer = new FirebaseMultiplayer();
+        return firebaseMultiplayer.joinGame(gameCode, playerName);
     }
 };
+
+// Auto-initialisation
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        if (window.firebase) {
+            initializeFirebase();
+        }
+    }, 1000);
+});
