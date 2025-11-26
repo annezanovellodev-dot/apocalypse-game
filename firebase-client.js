@@ -195,29 +195,68 @@ class FirebaseMultiplayer {
 // Initialisation Firebase
 function initializeFirebase() {
     try {
+        console.log('🔥 Début initialisation Firebase...');
+        
         // Initialiser Firebase avec CDN
         const script = document.createElement('script');
         script.src = 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js';
         document.head.appendChild(script);
 
         script.onload = () => {
+            console.log('📦 Firebase app chargé');
+            
             const firestoreScript = document.createElement('script');
             firestoreScript.src = 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js';
             document.head.appendChild(firestoreScript);
 
             firestoreScript.onload = () => {
+                console.log('📦 Firebase firestore chargé');
+                
                 // Initialiser Firebase
                 firebase.initializeApp(firebaseConfig);
                 db = firebase.firestore();
                 
-                console.log('🔥 Firebase initialisé !');
+                console.log('🔥 Firebase initialisé avec succès !');
                 
                 // Créer l'instance multi-joueurs
                 multiplayer = new FirebaseMultiplayer();
                 
-                // Tester la connexion
+                // Exposer les fonctions globalement
+                window.SupabaseClient = {
+                    initSupabase: () => {
+                        if (!multiplayer) multiplayer = new FirebaseMultiplayer();
+                        return multiplayer.init();
+                    },
+                    loginAdmin,
+                    createMobileUser
+                };
+
+                window.FirebaseMultiplayer = {
+                    init: () => {
+                        if (!multiplayer) multiplayer = new FirebaseMultiplayer();
+                        return multiplayer.init();
+                    },
+                    createGame: (hostName, playerName) => {
+                        if (!multiplayer) multiplayer = new FirebaseMultiplayer();
+                        return multiplayer.createGame(hostName, playerName);
+                    },
+                    joinGame: (gameCode, playerName) => {
+                        if (!multiplayer) multiplayer = new FirebaseMultiplayer();
+                        return multiplayer.joinGame(gameCode, playerName);
+                    },
+                    startGame: () => {
+                        if (!multiplayer) multiplayer = new FirebaseMultiplayer();
+                        return multiplayer.startGame();
+                    }
+                };
+                
+                console.log('✅ Fonctions Firebase exposées globalement');
+                
+                // Tester la connexion après 1 seconde
                 setTimeout(() => {
-                    multiplayer.init();
+                    if (multiplayer) {
+                        multiplayer.init();
+                    }
                 }, 1000);
             };
         };
@@ -259,35 +298,6 @@ async function createMobileUser(deviceInfo) {
     };
 }
 
-// Exporter les fonctions
-window.SupabaseClient = {
-    initSupabase: () => {
-        if (!multiplayer) multiplayer = new FirebaseMultiplayer();
-        return multiplayer.init();
-    },
-    loginAdmin,
-    createMobileUser
-};
-
-window.FirebaseMultiplayer = {
-    init: () => {
-        if (!multiplayer) multiplayer = new FirebaseMultiplayer();
-        return multiplayer.init();
-    },
-    createGame: (hostName, playerName) => {
-        if (!multiplayer) multiplayer = new FirebaseMultiplayer();
-        return multiplayer.createGame(hostName, playerName);
-    },
-    joinGame: (gameCode, playerName) => {
-        if (!multiplayer) multiplayer = new FirebaseMultiplayer();
-        return multiplayer.joinGame(gameCode, playerName);
-    },
-    startGame: () => {
-        if (!multiplayer) multiplayer = new FirebaseMultiplayer();
-        return multiplayer.startGame();
-    }
-};
-
 // Auto-initialisation
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
@@ -299,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('SupabaseClient:', window.SupabaseClient);
             console.log('FirebaseMultiplayer:', window.FirebaseMultiplayer);
             console.log('multiplayer instance:', multiplayer);
-        }, 2000);
+        }, 3000);
     }, 500);
 });
 
