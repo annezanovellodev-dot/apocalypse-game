@@ -1223,17 +1223,19 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
-<!-- Firebase Client -->
+</script>
+
+<!-- Multi-joueurs Local -->
 <script src="supabase-client.js"></script>
 <script>
-    // Multi-joueurs Firebase - Test automatique
+    // Multi-joueurs local - Test automatique
     document.addEventListener('DOMContentLoaded', async () => {
-        console.log('🔥 Initialisation multi-joueurs Firebase...');
+        console.log('🎮 Initialisation multi-joueurs local...');
         
         try {
             // Test connexion
             const success = await SupabaseClient.initSupabase();
-            console.log('✅ Firebase initialisé:', success ? 'Succès' : 'Échec');
+            console.log('✅ Multi-joueurs initialisé:', success ? 'Succès' : 'Échec');
             
             // Test login admin
             const result = await SupabaseClient.loginAdmin();
@@ -1244,41 +1246,41 @@
             statusDiv.style.position = 'fixed';
             statusDiv.style.top = '10px';
             statusDiv.style.left = '10px';
-            statusDiv.style.background = 'rgba(255, 165, 0, 0.1)';
-            statusDiv.style.border = '1px solid rgba(255, 165, 0, 0.3)';
-            statusDiv.style.color = '#ffa500';
+            statusDiv.style.background = 'rgba(0, 255, 0, 0.1)';
+            statusDiv.style.border = '1px solid rgba(0, 255, 0, 0.3)';
+            statusDiv.style.color = '#0f0';
             statusDiv.style.padding = '10px';
             statusDiv.style.borderRadius = '5px';
             statusDiv.style.fontFamily = 'monospace';
             statusDiv.style.fontSize = '12px';
             statusDiv.style.zIndex = '9999';
             statusDiv.innerHTML = 
-                '<div>🔥 Firebase: ' + (success ? 'Connecté' : 'Erreur') + '</div>' +
+                '<div>🎮 Multi-joueurs: ' + (success ? 'Connecté' : 'Erreur') + '</div>' +
                 '<div>👤 Admin: ' + (result ? 'Connecté' : 'Erreur') + '</div>' +
                 '<div>📱 Ready: ' + (success && result ? 'OUI' : 'NON') + '</div>';
             document.body.appendChild(statusDiv);
             
-            // Fonctions multi-joueurs Firebase
+            // Fonctions multi-joueurs
             window.MultiplayerFunctions = {
-                createGame: async (hostName, playerName) => {
-                    console.log('🎮 Création partie Firebase...');
-                    const game = await FirebaseMultiplayer.createGame(hostName, playerName);
+                createGame: (hostName, playerName) => {
+                    console.log('🎮 Création partie locale...');
+                    const game = FirebaseMultiplayer.createGame(hostName);
                     
-                    if (!game.error) {
+                    if (game.success) {
                         // Affiche le code
                         const codeDiv = document.createElement('div');
                         codeDiv.id = 'gameCodeDisplay';
                         codeDiv.style.cssText = `
                             position: fixed; top: 60px; right: 10px; 
-                            background: rgba(255,165,0,0.2); border: 2px solid #ffa500; 
-                            color: #ffa500; padding: 15px; border-radius: 10px; 
+                            background: rgba(0,255,0,0.2); border: 2px solid #0f0; 
+                            color: #0f0; padding: 15px; border-radius: 10px; 
                             font-family: monospace; font-weight: bold; z-index: 9999;
                         `;
                         codeDiv.innerHTML = `
-                            🔥 PARTIE CRÉÉE<br>
+                            🎮 PARTIE CRÉÉE<br>
                             📋 Code: <span style="font-size: 18px;">${game.gameCode}</span><br>
                             📱 Partage ce code aux joueurs<br>
-                            <button onclick="this.parentElement.remove()" style="margin-top: 10px; background: #ffa500; color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">✓ OK</button>
+                            <button onclick="this.parentElement.remove()" style="margin-top: 10px; background: #0f0; color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">✓ OK</button>
                         `;
                         document.body.appendChild(codeDiv);
                     } else {
@@ -1288,9 +1290,9 @@
                     return game;
                 },
                 
-                joinGame: async (gameCode, playerName) => {
-                    console.log('📱 Rejoindre partie Firebase:', gameCode);
-                    const result = await FirebaseMultiplayer.joinGame(gameCode, playerName);
+                joinGame: (gameCode, playerName) => {
+                    console.log('📱 Rejoindre partie locale:', gameCode);
+                    const result = FirebaseMultiplayer.joinGame(gameCode, playerName);
                     
                     if (result.success) {
                         // Affiche la confirmation
@@ -1303,7 +1305,7 @@
                             font-family: monospace; font-weight: bold; z-index: 9999;
                         `;
                         joinDiv.innerHTML = `
-                            ✅ CONNECTÉ FIREBASE<br>
+                            ✅ CONNECTÉ<br>
                             🎮 Partie: ${gameCode}<br>
                             📱 Joueur: ${playerName}<br>
                             <button onclick="this.parentElement.remove()" style="margin-top: 10px; background: #00f; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">✓ OK</button>
@@ -1317,7 +1319,7 @@
                 },
                 
                 startGame: () => {
-                    console.log('🚀 Démarrage partie Firebase...');
+                    console.log('🚀 Démarrage partie locale...');
                     const startDiv = document.createElement('div');
                     startDiv.style.cssText = `
                         position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -1327,7 +1329,7 @@
                         text-align: center;
                     `;
                     startDiv.innerHTML = `
-                        🔥 PARTIE DÉMARRÉE<br>
+                        🚀 PARTIE DÉMARRÉE<br>
                         🎮 Le jeu commence maintenant !<br>
                         <button onclick="this.parentElement.remove()" style="margin-top: 15px; background: #f0f; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">✓ COMMENCER</button>
                     `;
@@ -1335,10 +1337,10 @@
                 }
             };
             
-            console.log('🔥 Multi-joueurs Firebase prêt !');
+            console.log('🎮 Multi-joueurs local prêt !');
             
         } catch (error) {
-            console.error('❌ Erreur initialisation Firebase:', error);
+            console.error('❌ Erreur initialisation:', error);
         }
     });
 </script>
