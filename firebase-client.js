@@ -261,12 +261,19 @@ async function createMobileUser(deviceInfo) {
 
 // Exporter les fonctions
 window.SupabaseClient = {
-    initSupabase,
+    initSupabase: () => {
+        if (!multiplayer) multiplayer = new FirebaseMultiplayer();
+        return multiplayer.init();
+    },
     loginAdmin,
     createMobileUser
 };
 
 window.FirebaseMultiplayer = {
+    init: () => {
+        if (!multiplayer) multiplayer = new FirebaseMultiplayer();
+        return multiplayer.init();
+    },
     createGame: (hostName, playerName) => {
         if (!multiplayer) multiplayer = new FirebaseMultiplayer();
         return multiplayer.createGame(hostName, playerName);
@@ -285,6 +292,14 @@ window.FirebaseMultiplayer = {
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         initializeFirebase();
+        
+        // Vérification que tout est bien exposé
+        setTimeout(() => {
+            console.log('🔍 Vérification des fonctions exposées:');
+            console.log('SupabaseClient:', window.SupabaseClient);
+            console.log('FirebaseMultiplayer:', window.FirebaseMultiplayer);
+            console.log('multiplayer instance:', multiplayer);
+        }, 2000);
     }, 500);
 });
 
